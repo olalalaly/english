@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>English Memory Game</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <p class="eyebrow">English Memory Game</p>
+        <h1>Карточки, письмо и произношение в одном тренажере</h1>
+        <p class="hero-copy">
+          Учите слова в двух режимах: сначала вспоминайте перевод по памяти,
+          потом пишите английский вариант с клавиатуры и сразу слушайте произношение.
+        </p>
+
+        <div class="hero-stats">
+          <div class="stat-box">
+            <span id="totalWords">0</span>
+            <small>слов в наборе</small>
+          </div>
+          <div class="stat-box">
+            <span id="hardWords">0</span>
+            <small>сложных слов</small>
+          </div>
+          <div class="stat-box">
+            <span id="writingAccuracy">0%</span>
+            <small>точность письма</small>
+          </div>
+          <div class="stat-box">
+            <span id="bestStreak">0</span>
+            <small>лучший стрик</small>
+          </div>
+        </div>
+      </header>
+
+      <section class="panel controls">
+        <div class="mode-switch" role="tablist" aria-label="Режимы тренировки">
+          <button class="mode-button active" data-mode="cards" type="button">Карточки памяти</button>
+          <button class="mode-button" data-mode="writing" type="button">Пиши по-английски</button>
+        </div>
+
+        <div class="control-row">
+          <label class="toggle">
+            <input id="autoSpeak" type="checkbox" checked>
+            <span>Авто-озвучка</span>
+          </label>
+
+          <label class="toggle">
+            <input id="hardOnly" type="checkbox">
+            <span>Только сложные слова</span>
+          </label>
+
+          <div class="control-buttons">
+            <button class="ghost-button" id="shuffleButton" type="button">Перемешать</button>
+            <button class="ghost-button" id="resetButton" type="button">Сбросить прогресс</button>
+          </div>
+        </div>
+      </section>
+
+      <main class="panel trainer" id="trainer">
+        <div class="progress-row">
+          <div>
+            <p class="mode-label" id="modeLabel">Карточки памяти</p>
+            <h2 id="promptLabel">Вспомните русский перевод, не открывая подсказку</h2>
+          </div>
+          <div class="progress-chip" id="progressChip">1 / 1</div>
+        </div>
+
+        <section class="card-shell" id="cardShell">
+          <article class="word-card" id="wordCard">
+            <p class="card-caption" id="cardCaption">Английское слово</p>
+            <h3 id="wordText">Word</h3>
+            <p class="word-hint" id="wordHint">
+              Нажмите "Показать перевод", когда захотите проверить себя.
+            </p>
+
+            <div class="translation-box hidden" id="translationBox">
+              <p class="card-caption">Перевод</p>
+              <p class="translation-text" id="translationText">Перевод</p>
+            </div>
+          </article>
+        </section>
+
+        <form class="writing-form hidden" id="writingForm" autocomplete="off">
+          <label class="input-label" for="answerInput">Напишите ответ по-английски</label>
+          <input
+            id="answerInput"
+            type="text"
+            inputmode="latin"
+            autocapitalize="off"
+            autocorrect="off"
+            spellcheck="false"
+            placeholder="Введите слово или фразу"
+          >
+        </form>
+
+        <div class="feedback hidden" id="feedback"></div>
+
+        <div class="actions" id="cardActions">
+          <button class="secondary-button" id="speakCardButton" type="button">Слушать</button>
+          <button class="secondary-button" id="revealButton" type="button">Показать перевод</button>
+          <button class="primary-button hidden" id="knowButton" type="button">Помню</button>
+          <button class="danger-button hidden" id="repeatButton" type="button">Повторить</button>
+        </div>
+
+        <div class="actions hidden" id="writingActions">
+          <button class="secondary-button" id="speakWritingButton" type="button">Слушать</button>
+          <button class="primary-button" id="checkButton" type="button">Проверить</button>
+          <button class="secondary-button" id="showAnswerButton" type="button">Показать ответ</button>
+          <button class="accent-button hidden" id="nextButton" type="button">Дальше</button>
+        </div>
+
+        <div class="stats-strip">
+          <div class="mini-stat">
+            <span id="cardsReviewed">0</span>
+            <small>карточек отмечено</small>
+          </div>
+          <div class="mini-stat">
+            <span id="cardsKnown">0</span>
+            <small>раз отмечено "помню"</small>
+          </div>
+          <div class="mini-stat">
+            <span id="writingAnswered">0</span>
+            <small>ответов письмом</small>
+          </div>
+          <div class="mini-stat">
+            <span id="currentStreak">0</span>
+            <small>текущий стрик</small>
+          </div>
+        </div>
+
+        <p class="support-note" id="supportNote">
+          Произношение работает через встроенный голос браузера.
+        </p>
+      </main>
+    </div>
+
+    <script src="words.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>
