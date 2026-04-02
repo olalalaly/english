@@ -1,28 +1,73 @@
-const STORAGE_KEY = "english-memory-game-progress-v1";
+const STORAGE_KEY = "english-memory-game-progress-v2";
+const LEGACY_STORAGE_KEY = "english-memory-game-progress-v1";
+const GROUP_SIZE = 12;
+const DEFAULT_RATING = 2;
+const MAX_RATING = 5;
+const HARD_RATING_THRESHOLD = 2;
 
-const preparedWords = (window.WORDS || []).map((entry, index) => ({
-  ...entry,
-  id: makeId(entry.english, index),
-  displayEnglish: entry.displayEnglish || entry.english,
-  speakText: entry.speakText || entry.english,
-  acceptedAnswers: [entry.english, ...(entry.acceptedAnswers || [])]
-}));
+const MODES = {
+  cards: {
+    id: "cards",
+    label: "Карточки памяти",
+    direction: "English → Russian",
+    prompt: "Сначала вспомните перевод по памяти, потом откройте подсказку",
+    caption: "Английское слово"
+  },
+  "write-en": {
+    id: "write-en",
+    label: "Русский → English",
+    direction: "Русский → English",
+    prompt: "Смотрите на русский перевод и пишите английский вариант",
+    caption: "Русский перевод",
+    inputLabel: "Напишите ответ по-английски",
+    placeholder: "Введите английское слово или фразу",
+    feedbackLabel: "Правильный ответ"
+  },
+  "write-ru": {
+    id: "write-ru",
+    label: "English → Русский",
+    direction: "English → Русский",
+    prompt: "Смотрите на английское слово и пишите перевод по-русски",
+    caption: "Английское слово",
+    inputLabel: "Напишите ответ по-русски",
+    placeholder: "Введите русский перевод",
+    feedbackLabel: "Один из правильных переводов"
+  }
+};
 
+const preparedWords = (window.WORDS || []).map((entry, index) => {
+  const englishVariants = expandEnglishVariants([entry.english, ...(entry.acceptedAnswers || [])]);
+  const russianVariants = uniqueValues([
+    ...(entry.acceptedRussianAnswers || []),
+    entry.russian,
+    ...splitRussianVariants(entry.russian)
+  ]);
+
+  return {
+    ...entry,
+    id: makeId(entry.english, index),
+    displayEnglish: entry.displayEnglish || entry.english,
+    speakText: entry.speakText || entry.english,
+    acceptedEnglishAnswers: englishVariants.map(normalizeEnglish).filter(Boolean),
+    acceptedRussianAnswers: russianVariants.map(normalizeRussian).filter(Boolean),
+    groupNumber: Math.floor(index / GROUP_SIZE) + 1
+  };
+});
+
+const wordGroups = buildGroups(preparedWords);
 const persistent = loadProgress();
 
 const state = {
-  mode: "cards",
+  mode: normalizeMode(persistent.settings.mode),
   autoSpeak: persistent.settings.autoSpeak,
   hardOnly: persistent.settings.hardOnly,
-  hardWordIds: new Set(persistent.hardWordIds),
-  wordScores: persistent.wordScores,
+  selectedGroup: normalizeSelectedGroup(persistent.settings.selectedGroup),
+  ratings: persistent.ratings,
   stats: persistent.stats,
-  cardDeck: [],
-  writingDeck: [],
-  cardIndex: 0,
-  writingIndex: 0,
+  deck: [],
+  index: 0,
   cardRevealed: false,
-  writingChecked: false,
+  answerChecked: false,
   feedback: { type: "", text: "" },
   useAllWordsFallback: false,
   voices: []
@@ -30,22 +75,27 @@ const state = {
 
 const els = {
   totalWords: document.querySelector("#totalWords"),
-  hardWords: document.querySelector("#hardWords"),
+  totalGroups: document.querySelector("#totalGroups"),
+  averageRating: document.querySelector("#averageRating"),
   writingAccuracy: document.querySelector("#writingAccuracy"),
-  bestStreak: document.querySelector("#bestStreak"),
   modeButtons: Array.from(document.querySelectorAll(".mode-button")),
+  groupSelect: document.querySelector("#groupSelect"),
   autoSpeak: document.querySelector("#autoSpeak"),
   hardOnly: document.querySelector("#hardOnly"),
   shuffleButton: document.querySelector("#shuffleButton"),
   resetButton: document.querySelector("#resetButton"),
   modeLabel: document.querySelector("#modeLabel"),
   promptLabel: document.querySelector("#promptLabel"),
+  groupChip: document.querySelector("#groupChip"),
   progressChip: document.querySelector("#progressChip"),
+  directionChip: document.querySelector("#directionChip"),
+  ratingBadge: document.querySelector("#ratingBadge"),
   cardCaption: document.querySelector("#cardCaption"),
   wordText: document.querySelector("#wordText"),
   wordHint: document.querySelector("#wordHint"),
   translationBox: document.querySelector("#translationBox"),
   translationText: document.querySelector("#translationText"),
+  answerLabel: document.querySelector("#answerLabel"),
   writingForm: document.querySelector("#writingForm"),
   answerInput: document.querySelector("#answerInput"),
   feedback: document.querySelector("#feedback"),
@@ -59,21 +109,24 @@ const els = {
   checkButton: document.querySelector("#checkButton"),
   showAnswerButton: document.querySelector("#showAnswerButton"),
   nextButton: document.querySelector("#nextButton"),
+  ratingButtons: Array.from(document.querySelectorAll(".rating-button")),
   cardsReviewed: document.querySelector("#cardsReviewed"),
-  cardsKnown: document.querySelector("#cardsKnown"),
-  writingAnswered: document.querySelector("#writingAnswered"),
-  currentStreak: document.querySelector("#currentStreak"),
+  writingToEnglishAnswered: document.querySelector("#writingToEnglishAnswered"),
+  writingToRussianAnswered: document.querySelector("#writingToRussianAnswered"),
+  bestStreak: document.querySelector("#bestStreak"),
   supportNote: document.querySelector("#supportNote")
 };
 
 init();
 
 function init() {
+  populateGroupSelect();
   setupVoices();
   bindEvents();
   els.autoSpeak.checked = state.autoSpeak;
   els.hardOnly.checked = state.hardOnly;
-  rebuildDecks();
+  els.groupSelect.value = state.selectedGroup;
+  rebuildDeck();
   render(false);
 }
 
@@ -85,10 +138,19 @@ function bindEvents() {
       }
 
       state.mode = button.dataset.mode;
+      resetTurnState();
       state.feedback = { type: "", text: "" };
       render(true);
       saveProgress();
     });
+  });
+
+  els.groupSelect.addEventListener("change", () => {
+    state.selectedGroup = normalizeSelectedGroup(els.groupSelect.value);
+    rebuildDeck();
+    state.feedback = { type: "", text: "" };
+    render(false);
+    saveProgress();
   });
 
   els.autoSpeak.addEventListener("change", () => {
@@ -98,43 +160,42 @@ function bindEvents() {
 
   els.hardOnly.addEventListener("change", () => {
     state.hardOnly = els.hardOnly.checked;
-    rebuildDecks();
-    render(true);
+    rebuildDeck();
+    render(false);
     saveProgress();
   });
 
   els.shuffleButton.addEventListener("click", () => {
-    rebuildDecks();
+    rebuildDeck();
     state.feedback = {
       type: "info",
       text: state.hardOnly && state.useAllWordsFallback
-        ? "Сложных слов пока нет, поэтому я показала весь набор."
-        : "Слова перемешаны."
+        ? "В этой группе пока нет слов с низким рейтингом, поэтому показываю все слова выбранной группы."
+        : "Слова в выбранной группе перемешаны."
     };
-    render(true);
+    render(false);
   });
 
   els.resetButton.addEventListener("click", () => {
-    const shouldReset = window.confirm("Сбросить статистику и список сложных слов?");
+    const shouldReset = window.confirm("Сбросить рейтинги слов и всю статистику?");
 
     if (!shouldReset) {
       return;
     }
 
-    state.hardWordIds = new Set();
-    state.wordScores = {};
+    state.ratings = {};
     state.stats = createDefaultStats();
-    rebuildDecks();
+    rebuildDeck();
     state.feedback = {
       type: "info",
-      text: "Прогресс очищен. Можно начинать заново."
+      text: "Рейтинги и статистика очищены. Можно начинать заново."
     };
-    render(true);
+    render(false);
     saveProgress();
   });
 
-  els.speakCardButton.addEventListener("click", () => speakCurrentWord());
-  els.speakWritingButton.addEventListener("click", () => speakCurrentWord());
+  els.speakCardButton.addEventListener("click", speakCurrentWord);
+  els.speakWritingButton.addEventListener("click", speakCurrentWord);
 
   els.revealButton.addEventListener("click", () => {
     state.cardRevealed = true;
@@ -144,68 +205,107 @@ function bindEvents() {
 
   els.knowButton.addEventListener("click", () => markCard(true));
   els.repeatButton.addEventListener("click", () => markCard(false));
-
   els.checkButton.addEventListener("click", checkWritingAnswer);
   els.showAnswerButton.addEventListener("click", revealWritingAnswer);
-  els.nextButton.addEventListener("click", nextWritingWord);
+  els.nextButton.addEventListener("click", nextWord);
 
   els.writingForm.addEventListener("submit", (event) => {
     event.preventDefault();
 
-    if (state.writingChecked) {
-      nextWritingWord();
+    if (state.answerChecked) {
+      nextWord();
       return;
     }
 
     checkWritingAnswer();
   });
+
+  els.ratingButtons.forEach((button) => {
+    button.addEventListener("click", () => setCurrentRating(Number(button.dataset.rating)));
+  });
 }
 
-function rebuildDecks() {
-  const sourceWords = getActiveWords();
-  state.cardDeck = shuffle(sourceWords);
-  state.writingDeck = shuffle(sourceWords);
-  state.cardIndex = 0;
-  state.writingIndex = 0;
+function populateGroupSelect() {
+  const options = [
+    { value: "all", label: `Все группы · ${preparedWords.length} слов` },
+    ...wordGroups.map((group) => ({
+      value: group.id,
+      label: `${group.label} · ${group.words.length} слов`
+    }))
+  ];
+
+  els.groupSelect.innerHTML = options
+    .map((option) => `<option value="${option.value}">${option.label}</option>`)
+    .join("");
+}
+
+function rebuildDeck() {
+  state.deck = shuffle(getActiveWords());
+  state.index = 0;
+  resetTurnState();
+}
+
+function resetTurnState() {
   state.cardRevealed = false;
-  state.writingChecked = false;
+  state.answerChecked = false;
   els.answerInput.value = "";
+  els.answerInput.disabled = false;
+}
+
+function getSelectedWords() {
+  if (state.selectedGroup === "all") {
+    return preparedWords.slice();
+  }
+
+  const foundGroup = wordGroups.find((group) => group.id === state.selectedGroup);
+  return foundGroup ? foundGroup.words.slice() : wordGroups[0].words.slice();
 }
 
 function getActiveWords() {
   state.useAllWordsFallback = false;
 
+  const selectedWords = getSelectedWords();
+
   if (!state.hardOnly) {
-    return preparedWords.slice();
+    return selectedWords;
   }
 
-  const hardWords = preparedWords.filter((entry) => state.hardWordIds.has(entry.id));
+  const filtered = selectedWords.filter((entry) => getRating(entry.id) <= HARD_RATING_THRESHOLD);
 
-  if (hardWords.length > 0) {
-    return hardWords;
+  if (filtered.length > 0) {
+    return filtered;
   }
 
   state.useAllWordsFallback = true;
-  return preparedWords.slice();
+  return selectedWords;
 }
 
 function render(shouldAutoSpeak) {
+  if (!state.deck.length) {
+    rebuildDeck();
+  }
+
   const current = getCurrentEntry();
-  const total = getCurrentDeck().length || 1;
-  const index = state.mode === "cards" ? state.cardIndex : state.writingIndex;
+  const mode = MODES[state.mode];
 
   els.modeButtons.forEach((button) => {
     button.classList.toggle("active", button.dataset.mode === state.mode);
   });
 
+  els.groupSelect.value = state.selectedGroup;
   updateSummaryStats();
-  els.progressChip.textContent = `${index + 1} / ${total}`;
+  updateProgress();
   renderFeedback();
+  renderRating(current);
+
+  els.modeLabel.textContent = mode.label;
+  els.promptLabel.textContent = mode.prompt;
+  els.directionChip.textContent = mode.direction;
 
   if (state.mode === "cards") {
     renderCardsMode(current);
   } else {
-    renderWritingMode(current);
+    renderWritingMode(current, mode);
   }
 
   if (shouldAutoSpeak && state.autoSpeak) {
@@ -213,15 +313,23 @@ function render(shouldAutoSpeak) {
   }
 }
 
+function updateProgress() {
+  const total = state.deck.length || 1;
+  const selectedWords = getSelectedWords();
+  const currentGroup = wordGroups.find((group) => group.id === state.selectedGroup);
+
+  els.progressChip.textContent = `${state.index + 1} / ${total}`;
+  els.groupChip.textContent = state.selectedGroup === "all"
+    ? `Все группы · ${selectedWords.length} слов`
+    : `${currentGroup.label} · ${selectedWords.length} слов`;
+}
+
 function renderCardsMode(entry) {
-  state.cardRevealed = Boolean(state.cardRevealed);
-  els.modeLabel.textContent = "Карточки памяти";
-  els.promptLabel.textContent = "Вспомните русский перевод, не открывая подсказку";
-  els.cardCaption.textContent = "Английское слово";
+  els.cardCaption.textContent = MODES.cards.caption;
   els.wordText.textContent = entry.displayEnglish;
   els.wordHint.textContent = state.cardRevealed
     ? "Отметьте, получилось ли вспомнить перевод без подсказки."
-    : "Сначала попробуйте вспомнить перевод сами, потом откройте подсказку.";
+    : "Не открывайте перевод сразу. Попробуйте вспомнить его по памяти.";
   els.translationText.textContent = entry.russian;
 
   els.translationBox.classList.toggle("hidden", !state.cardRevealed);
@@ -233,22 +341,37 @@ function renderCardsMode(entry) {
   els.repeatButton.classList.toggle("hidden", !state.cardRevealed);
 }
 
-function renderWritingMode(entry) {
-  els.modeLabel.textContent = "Пиши по-английски";
-  els.promptLabel.textContent = "Смотрите на русский перевод и пишите английский вариант";
-  els.cardCaption.textContent = "Русский перевод";
-  els.wordText.textContent = entry.russian;
-  els.wordHint.textContent = "Можно слушать слово сколько угодно раз и потом написать ответ.";
+function renderWritingMode(entry, mode) {
+  const isRussianWriting = state.mode === "write-ru";
+
+  els.cardCaption.textContent = mode.caption;
+  els.wordText.textContent = isRussianWriting ? entry.displayEnglish : entry.russian;
+  els.wordHint.textContent = isRussianWriting
+    ? "Слушайте слово и напишите один перевод по-русски."
+    : "Слушайте слово и напишите английский вариант без подсказки.";
+  els.answerLabel.textContent = mode.inputLabel;
+  els.answerInput.placeholder = mode.placeholder;
+  els.answerInput.inputMode = isRussianWriting ? "text" : "latin";
+  els.answerInput.lang = isRussianWriting ? "ru" : "en";
   els.translationBox.classList.add("hidden");
   els.writingForm.classList.remove("hidden");
   els.cardActions.classList.add("hidden");
   els.writingActions.classList.remove("hidden");
-  els.nextButton.classList.toggle("hidden", !state.writingChecked);
-  els.answerInput.disabled = state.writingChecked;
+  els.answerInput.disabled = state.answerChecked;
+  els.nextButton.classList.toggle("hidden", !state.answerChecked);
 
-  if (!state.writingChecked) {
+  if (!state.answerChecked) {
     window.requestAnimationFrame(() => els.answerInput.focus());
   }
+}
+
+function renderRating(entry) {
+  const rating = getRating(entry.id);
+  els.ratingBadge.textContent = `Знаю на ${rating} / 5`;
+
+  els.ratingButtons.forEach((button) => {
+    button.classList.toggle("active", Number(button.dataset.rating) === rating);
+  });
 }
 
 function markCard(remembered) {
@@ -256,30 +379,33 @@ function markCard(remembered) {
   state.stats.cardsReviewed += 1;
 
   if (remembered) {
-    state.stats.cardsKnown += 1;
-    adjustWordScore(entry.id, 1);
+    adjustRating(entry.id, 1);
+    bumpStreak(true);
   } else {
-    adjustWordScore(entry.id, -1);
+    adjustRating(entry.id, -1);
+    bumpStreak(false);
   }
 
-  state.cardRevealed = false;
   state.feedback = remembered
-    ? { type: "success", text: `Отлично. "${entry.displayEnglish}" отмечено как знакомое.` }
-    : { type: "info", text: `Добавила "${entry.displayEnglish}" в сложные слова для повторения.` };
+    ? { type: "success", text: `Отлично. "${entry.displayEnglish}" стало ближе к знакомым словам.` }
+    : { type: "info", text: `Слово "${entry.displayEnglish}" осталось в активном повторении.` };
 
-  moveToNextCard();
+  moveToNextDeckEntry();
   render(state.autoSpeak);
   saveProgress();
 }
 
 function checkWritingAnswer() {
-  if (state.writingChecked) {
-    nextWritingWord();
+  if (state.answerChecked) {
+    nextWord();
     return;
   }
 
   const entry = getCurrentEntry();
-  const answer = normalizeText(els.answerInput.value);
+  const isRussianWriting = state.mode === "write-ru";
+  const answer = isRussianWriting
+    ? normalizeRussian(els.answerInput.value)
+    : normalizeEnglish(els.answerInput.value);
 
   if (!answer) {
     state.feedback = { type: "info", text: "Сначала введите ответ, а потом нажмите проверку." };
@@ -287,23 +413,29 @@ function checkWritingAnswer() {
     return;
   }
 
-  state.stats.writingAnswered += 1;
-  const accepted = entry.acceptedAnswers.map(normalizeText);
-  const isCorrect = accepted.includes(answer);
+  const acceptedAnswers = isRussianWriting ? entry.acceptedRussianAnswers : entry.acceptedEnglishAnswers;
+  const isCorrect = acceptedAnswers.includes(answer);
+  const statsPrefix = isRussianWriting ? "writingToRussian" : "writingToEnglish";
 
-  state.writingChecked = true;
+  state.stats[`${statsPrefix}Answered`] += 1;
+  state.answerChecked = true;
   els.answerInput.disabled = true;
 
   if (isCorrect) {
-    state.stats.writingCorrect += 1;
-    state.stats.currentStreak += 1;
-    state.stats.bestStreak = Math.max(state.stats.bestStreak, state.stats.currentStreak);
-    adjustWordScore(entry.id, 2);
-    state.feedback = { type: "success", text: `Верно: ${entry.displayEnglish}` };
+    state.stats[`${statsPrefix}Correct`] += 1;
+    adjustRating(entry.id, 1);
+    bumpStreak(true);
+    state.feedback = {
+      type: "success",
+      text: `Верно: ${isRussianWriting ? entry.russian : entry.displayEnglish}`
+    };
   } else {
-    state.stats.currentStreak = 0;
-    adjustWordScore(entry.id, -2);
-    state.feedback = { type: "error", text: `Правильный ответ: ${entry.displayEnglish}` };
+    adjustRating(entry.id, -1);
+    bumpStreak(false);
+    state.feedback = {
+      type: "error",
+      text: `${MODES[state.mode].feedbackLabel}: ${isRussianWriting ? entry.russian : entry.displayEnglish}`
+    };
 
     if (state.autoSpeak) {
       speakEntry(entry);
@@ -315,16 +447,21 @@ function checkWritingAnswer() {
 }
 
 function revealWritingAnswer() {
-  if (state.writingChecked) {
+  if (state.answerChecked) {
     return;
   }
 
   const entry = getCurrentEntry();
-  adjustWordScore(entry.id, -1);
-  state.stats.currentStreak = 0;
-  state.writingChecked = true;
+  const isRussianWriting = state.mode === "write-ru";
+
+  adjustRating(entry.id, -1);
+  bumpStreak(false);
+  state.answerChecked = true;
   els.answerInput.disabled = true;
-  state.feedback = { type: "info", text: `Ответ: ${entry.displayEnglish}` };
+  state.feedback = {
+    type: "info",
+    text: `${MODES[state.mode].feedbackLabel}: ${isRussianWriting ? entry.russian : entry.displayEnglish}`
+  };
 
   if (state.autoSpeak) {
     speakEntry(entry);
@@ -334,48 +471,60 @@ function revealWritingAnswer() {
   saveProgress();
 }
 
-function nextWritingWord() {
-  state.writingChecked = false;
-  els.answerInput.disabled = false;
-  els.answerInput.value = "";
+function nextWord() {
   state.feedback = { type: "", text: "" };
-
-  state.writingIndex += 1;
-
-  if (state.writingIndex >= state.writingDeck.length) {
-    state.writingDeck = shuffle(getActiveWords());
-    state.writingIndex = 0;
-  }
-
+  moveToNextDeckEntry();
   render(true);
+  saveProgress();
 }
 
-function moveToNextCard() {
-  state.cardIndex += 1;
+function moveToNextDeckEntry() {
+  state.index += 1;
 
-  if (state.cardIndex >= state.cardDeck.length) {
-    state.cardDeck = shuffle(getActiveWords());
-    state.cardIndex = 0;
+  if (state.index >= state.deck.length) {
+    state.deck = shuffle(getActiveWords());
+    state.index = 0;
   }
+
+  resetTurnState();
 }
 
-function getCurrentDeck() {
-  return state.mode === "cards" ? state.cardDeck : state.writingDeck;
+function setCurrentRating(rating) {
+  const entry = getCurrentEntry();
+  state.ratings[entry.id] = clampRating(rating);
+  state.feedback = {
+    type: "info",
+    text: `Рейтинг для "${entry.displayEnglish}" сохранен: ${getRating(entry.id)} / 5.`
+  };
+
+  render(false);
+  saveProgress();
 }
 
 function getCurrentEntry() {
-  const deck = getCurrentDeck();
-  return deck[state.mode === "cards" ? state.cardIndex : state.writingIndex];
+  return state.deck[state.index] || preparedWords[0];
 }
 
-function adjustWordScore(wordId, delta) {
-  const nextScore = Math.max(-6, Math.min(6, (state.wordScores[wordId] || 0) + delta));
-  state.wordScores[wordId] = nextScore;
+function getRating(wordId) {
+  return clampRating(
+    Number.isFinite(state.ratings[wordId]) ? state.ratings[wordId] : DEFAULT_RATING
+  );
+}
 
-  if (nextScore <= -1) {
-    state.hardWordIds.add(wordId);
-  } else if (nextScore >= 1) {
-    state.hardWordIds.delete(wordId);
+function adjustRating(wordId, delta) {
+  state.ratings[wordId] = clampRating(getRating(wordId) + delta);
+}
+
+function clampRating(value) {
+  return Math.max(0, Math.min(MAX_RATING, Number(value) || 0));
+}
+
+function bumpStreak(isSuccess) {
+  if (isSuccess) {
+    state.stats.currentStreak += 1;
+    state.stats.bestStreak = Math.max(state.stats.bestStreak, state.stats.currentStreak);
+  } else {
+    state.stats.currentStreak = 0;
   }
 }
 
@@ -446,73 +595,101 @@ function renderFeedback() {
 }
 
 function updateSummaryStats() {
-  const accuracy = state.stats.writingAnswered
-    ? Math.round((state.stats.writingCorrect / state.stats.writingAnswered) * 100)
+  const totalWritingAnswered = state.stats.writingToEnglishAnswered + state.stats.writingToRussianAnswered;
+  const totalWritingCorrect = state.stats.writingToEnglishCorrect + state.stats.writingToRussianCorrect;
+  const accuracy = totalWritingAnswered
+    ? Math.round((totalWritingCorrect / totalWritingAnswered) * 100)
     : 0;
+  const totalRatings = preparedWords.reduce((sum, entry) => sum + getRating(entry.id), 0);
+  const averageRating = preparedWords.length ? (totalRatings / preparedWords.length).toFixed(1) : "0.0";
 
   els.totalWords.textContent = preparedWords.length;
-  els.hardWords.textContent = state.hardWordIds.size;
+  els.totalGroups.textContent = wordGroups.length;
+  els.averageRating.textContent = `${averageRating} / 5`;
   els.writingAccuracy.textContent = `${accuracy}%`;
-  els.bestStreak.textContent = state.stats.bestStreak;
   els.cardsReviewed.textContent = state.stats.cardsReviewed;
-  els.cardsKnown.textContent = state.stats.cardsKnown;
-  els.writingAnswered.textContent = state.stats.writingAnswered;
-  els.currentStreak.textContent = state.stats.currentStreak;
+  els.writingToEnglishAnswered.textContent = state.stats.writingToEnglishAnswered;
+  els.writingToRussianAnswered.textContent = state.stats.writingToRussianAnswered;
+  els.bestStreak.textContent = state.stats.bestStreak;
 
   if (!("speechSynthesis" in window)) {
     els.supportNote.textContent = "В этом браузере не нашлась Web Speech API, поэтому озвучка может не работать.";
   } else if (state.hardOnly && state.useAllWordsFallback) {
-    els.supportNote.textContent = "Сложных слов пока нет, поэтому в тренировке показываются все слова.";
+    els.supportNote.textContent = "В выбранной группе пока нет слов с рейтингом 0-2, поэтому показываются все слова этой группы.";
+  } else if (state.selectedGroup === "all") {
+    els.supportNote.textContent = "Сейчас открыты все группы. Для быстрого заучивания лучше выбрать одну группу по 12 слов.";
   } else {
-    els.supportNote.textContent = "Слушать слово можно в обоих режимах столько раз, сколько нужно.";
+    els.supportNote.textContent = "Рейтинг слова можно менять вручную от 0 до 5, а правильные и неправильные ответы обновляют его автоматически.";
   }
 }
 
 function loadProgress() {
   const fallback = {
-    hardWordIds: [],
-    wordScores: {},
+    ratings: {},
     stats: createDefaultStats(),
     settings: {
       autoSpeak: true,
-      hardOnly: false
+      hardOnly: false,
+      mode: "cards",
+      selectedGroup: wordGroups[0]?.id || "all"
     }
   };
 
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+  const current = safeJsonParse(window.localStorage.getItem(STORAGE_KEY));
 
-    if (!raw) {
-      return fallback;
-    }
-
-    const parsed = JSON.parse(raw);
-
+  if (current) {
     return {
-      hardWordIds: Array.isArray(parsed.hardWordIds) ? parsed.hardWordIds : fallback.hardWordIds,
-      wordScores: parsed.wordScores && typeof parsed.wordScores === "object" ? parsed.wordScores : fallback.wordScores,
-      stats: {
-        ...createDefaultStats(),
-        ...(parsed.stats || {})
-      },
+      ratings: current.ratings && typeof current.ratings === "object" ? current.ratings : fallback.ratings,
+      stats: { ...createDefaultStats(), ...(current.stats || {}) },
       settings: {
-        autoSpeak: parsed.settings?.autoSpeak ?? fallback.settings.autoSpeak,
-        hardOnly: parsed.settings?.hardOnly ?? fallback.settings.hardOnly
+        autoSpeak: current.settings?.autoSpeak ?? fallback.settings.autoSpeak,
+        hardOnly: current.settings?.hardOnly ?? fallback.settings.hardOnly,
+        mode: current.settings?.mode ?? fallback.settings.mode,
+        selectedGroup: current.settings?.selectedGroup ?? fallback.settings.selectedGroup
       }
     };
-  } catch (error) {
-    return fallback;
   }
+
+  const legacy = safeJsonParse(window.localStorage.getItem(LEGACY_STORAGE_KEY));
+
+  if (legacy) {
+    const migratedRatings = {};
+
+    Object.entries(legacy.wordScores || {}).forEach(([wordId, score]) => {
+      migratedRatings[wordId] = legacyScoreToRating(score);
+    });
+
+    return {
+      ratings: migratedRatings,
+      stats: {
+        ...createDefaultStats(),
+        cardsReviewed: legacy.stats?.cardsReviewed || 0,
+        writingToEnglishAnswered: legacy.stats?.writingAnswered || 0,
+        writingToEnglishCorrect: legacy.stats?.writingCorrect || 0,
+        currentStreak: legacy.stats?.currentStreak || 0,
+        bestStreak: legacy.stats?.bestStreak || 0
+      },
+      settings: {
+        autoSpeak: legacy.settings?.autoSpeak ?? fallback.settings.autoSpeak,
+        hardOnly: legacy.settings?.hardOnly ?? fallback.settings.hardOnly,
+        mode: "cards",
+        selectedGroup: fallback.settings.selectedGroup
+      }
+    };
+  }
+
+  return fallback;
 }
 
 function saveProgress() {
   const payload = {
-    hardWordIds: [...state.hardWordIds],
-    wordScores: state.wordScores,
+    ratings: state.ratings,
     stats: state.stats,
     settings: {
       autoSpeak: state.autoSpeak,
-      hardOnly: state.hardOnly
+      hardOnly: state.hardOnly,
+      mode: state.mode,
+      selectedGroup: state.selectedGroup
     }
   };
 
@@ -522,12 +699,28 @@ function saveProgress() {
 function createDefaultStats() {
   return {
     cardsReviewed: 0,
-    cardsKnown: 0,
-    writingAnswered: 0,
-    writingCorrect: 0,
+    writingToEnglishAnswered: 0,
+    writingToEnglishCorrect: 0,
+    writingToRussianAnswered: 0,
+    writingToRussianCorrect: 0,
     currentStreak: 0,
     bestStreak: 0
   };
+}
+
+function buildGroups(words) {
+  const groups = [];
+
+  for (let index = 0; index < words.length; index += GROUP_SIZE) {
+    const slice = words.slice(index, index + GROUP_SIZE);
+    groups.push({
+      id: String(groups.length + 1),
+      label: `Группа ${groups.length + 1}`,
+      words: slice
+    });
+  }
+
+  return groups;
 }
 
 function shuffle(items) {
@@ -541,16 +734,123 @@ function shuffle(items) {
   return cloned;
 }
 
-function normalizeText(value) {
+function expandEnglishVariants(items) {
+  const variants = [];
+
+  items.forEach((item) => {
+    if (!item) {
+      return;
+    }
+
+    const trimmed = item.trim();
+
+    if (!trimmed) {
+      return;
+    }
+
+    variants.push(trimmed);
+
+    if (trimmed.toLowerCase().startsWith("to ")) {
+      variants.push(trimmed.slice(3));
+    }
+
+    if (trimmed.includes("/")) {
+      trimmed.split("/").forEach((part) => variants.push(part.trim()));
+    }
+  });
+
+  return uniqueValues(variants);
+}
+
+function splitRussianVariants(value) {
+  if (!value) {
+    return [];
+  }
+
+  return value
+    .split(/[;,]/)
+    .map((chunk) => chunk.trim())
+    .filter(Boolean);
+}
+
+function uniqueValues(values) {
+  return Array.from(new Set(values.filter(Boolean)));
+}
+
+function normalizeEnglish(value) {
   return value
     .toLowerCase()
+    .replace(/&/g, " and ")
     .replace(/[\u2019']/g, "")
     .replace(/[-/]/g, " ")
-    .replace(/[^a-z0-9\s]/g, "")
+    .replace(/[^a-z0-9\s]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function normalizeRussian(value) {
+  return value
+    .toLowerCase()
+    .replace(/ё/g, "е")
+    .replace(/[\u2019']/g, "")
+    .replace(/[-/]/g, " ")
+    .replace(/[^a-zа-я0-9\s]/gi, " ")
     .replace(/\s+/g, " ")
     .trim();
 }
 
 function makeId(text, index) {
   return `${text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "") || "word"}-${index}`;
+}
+
+function safeJsonParse(value) {
+  if (!value) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(value);
+  } catch (error) {
+    return null;
+  }
+}
+
+function legacyScoreToRating(score) {
+  const numericScore = Number(score) || 0;
+
+  if (numericScore <= -4) {
+    return 0;
+  }
+
+  if (numericScore <= -2) {
+    return 1;
+  }
+
+  if (numericScore <= 1) {
+    return 2;
+  }
+
+  if (numericScore <= 3) {
+    return 3;
+  }
+
+  if (numericScore <= 5) {
+    return 4;
+  }
+
+  return 5;
+}
+
+function normalizeSelectedGroup(value) {
+  if (value === "all") {
+    return "all";
+  }
+
+  return wordGroups.some((group) => group.id === String(value))
+    ? String(value)
+    : (wordGroups[0]?.id || "all");
+}
+
+function normalizeMode(mode) {
+  return MODES[mode] ? mode : "cards";
 }
