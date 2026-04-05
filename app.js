@@ -1,5 +1,6 @@
-const STORAGE_KEY = "english-memory-game-progress-v2";
-const LEGACY_STORAGE_KEY = "english-memory-game-progress-v1";
+const STORAGE_KEY = "english-memory-game-progress-v3";
+const LEGACY_STORAGE_KEY = "english-memory-game-progress-v2";
+const OLDER_STORAGE_KEY = "english-memory-game-progress-v1";
 const GROUP_SIZE = 12;
 const DEFAULT_RATING = 2;
 const MAX_RATING = 5;
@@ -35,6 +36,161 @@ const MODES = {
   }
 };
 
+const READING_BLUEPRINTS = [
+  {
+    title: "Ужин И Ферма",
+    template: `
+The [[0]] was strong when I saw an [[1]] bowl of [[3]] near a hot [[4]]. The salad looked like a [[5]] of colors.
+
+On the farm, the old machine could [[2]] a hand, so we stayed away. The [[6]] moved slowly, and one [[7]] animal could not run. The [[8]] cook knew the meal would [[9]] a lot, yet it would still [[10]] the whole family and help everyone [[11]] enough food.
+`
+  },
+  {
+    title: "Вечер На Диване",
+    template: `
+On [[1]] night, we sat on the [[3]] and watched a good [[1]]. The old [[2]] looked dusty, but the story was still clear.
+
+One rude man tried to [[0]] my friend, and she told him, "[[4]]." Another person shouted, "[[5]]," but we said, "[[6]]." It is hard to [[7]] peace in a room like that, yet I still [[8]] my calm friend. I do not [[9]] her; I think her long [[10]] of patience can [[11]] to every friendship.
+`
+  },
+  {
+    title: "Плохая Кухня",
+    template: `
+The best [[0]] for a bad kitchen is simple cleaning. During [[1]], a child learns why a [[4]] full of old soup and white [[3]] can smell [[5]].
+
+If someone [[6|casts]] trash on the floor, I get [[2]]. A rich man may [[7]] great [[8]], but without a [[11]] to help, he will not [[9]] people around him. His [[10]] words can ruin the whole day.
+`
+  },
+  {
+    title: "Странный Музей",
+    template: `
+At the [[2]] stage of the museum job, I felt [[4]] because a worker had [[5]] through an old model and exposed dry [[6]] inside.
+
+The room [[8]] to our office was quiet, and I had to [[9]] papers for [[10]] while I [[11]] soup in a cup. One artist sent a small [[7]] instead of a real [[3]], and I felt a [[1]] pride for him; [[0]], I kept the piece.
+`
+  },
+  {
+    title: "Дом У Озера",
+    template: `
+We went to the [[0]] in a [[1]] while a [[2]] moved far away. I wanted to [[3]] a fish, but then I heard a [[4]] near the reeds.
+
+The [[5]] group stopped, and one boy tried to [[6]] the boat wall in fear. We told him to [[7]] the heavy [[8]] box and to [[9]] the old man who lived by the [[11]]. Near his door a [[10]] grew alone.
+`
+  },
+  {
+    title: "Тест У Сосны",
+    template: `
+After rain, a [[0]] lay under the [[10]] tree. My [[11]] laughed at a [[1]] hole in the road, but a [[2]] only sees the surface.
+
+At school, one rude [[3]] missed the [[4]] in the game. The kind [[7]] beside me said, "[[5]]," when I sneezed and, "[[6]]," before my test. I ate [[8]] with [[9]] in the morning.
+`
+  },
+  {
+    title: "Семейный Десерт",
+    template: `
+My [[0]] and [[1]] came for lunch. We ate [[2]] on bread and a hot [[7]] with [[5]].
+
+Later we made a cake with sweet [[4]], cold [[6]], and bright [[9]]. A child hit his [[3]] on a [[8]] near the [[10]], so I had to [[11]] ice into small pieces.
+`
+  },
+  {
+    title: "Урок Географии",
+    template: `
+Our teacher did not [[0]] us; her [[1]] simply meant that we had to stay [[4]] and do the work. She told us not to [[2]] the quiet boy, and asked me to [[3]] a map from paper.
+
+First we drew a [[6]] of stars, then a line from the [[8]] to the [[9]], with the [[10]] in the middle. A black [[11]] sat on the window while we talked about a train [[5]] outside.
+`
+  },
+  {
+    title: "Космос И Булка",
+    template: `
+In my [[11]], I keep a space book in the [[9]] beside a fresh [[8]]. It shows [[1]], [[2]], [[0]], and [[3]] under the same [[4]].
+
+The pages explain the [[5]] and the [[6]] in simple words. One small [[7]] in the book made me smile: after all that science, the writer told the reader not to [[10]] but to keep learning.
+`
+  },
+  {
+    title: "Теплая Комната",
+    template: `
+Our small room felt [[3]] because a [[4]] with a [[5]] sat by the fire. Her [[6]] face became [[2]] when a wet [[0]] ran in.
+
+It was a [[1]], dirty and tired, and its fur looked [[7]] under the light. Still, cleaning it was [[8]], because it began to [[9]] a soft smell of soap. I gave the bowl a [[10]], but the floor stayed [[11]].
+`
+  },
+  {
+    title: "Шумная Команда",
+    template: `
+During my [[10]], a problem began to [[3]] in our team [[11]]. One loud [[7]] tried to [[2]] every task and did not stop to [[5]] people.
+
+We made a [[6]] and, [[9]], everyone wanted less noise and more light. Too much [[8]] of private data would be a [[4]], because it could hurt our [[0]] peace. A calm leader with [[1]] patience fixed it.
+`
+  },
+  {
+    title: "Карта И Небо",
+    template: `
+A [[0]] stood on the [[1]] while we studied a world map. We marked the [[2]], [[3]], [[4]], and [[5]] with blue lines.
+
+Later at night we looked for [[6]], [[7]], [[8]], and [[9]] in a book. My little brother wore paper [[10]] and said he felt [[11]].
+`
+  },
+  {
+    title: "Старый Клуб",
+    template: `
+At the old [[1]], the [[10]] took a [[0]] of tea and looked at a broken door. Someone had used a [[2]] and a [[6]] to open it, and the lock began to [[7]].
+
+Inside we found [[8]] trash, bad food, and one [[5]] asleep on a [[9]] chair. His [[4]] note on the wall made everyone quiet. The [[3]] of the mess would be hard, and the rain made conditions more [[11]].
+`
+  },
+  {
+    title: "Летний Двор",
+    template: `
+The children kept [[2]] in the yard, and one boy loved to [[3]] until dinner. Their [[4]] felt endless, almost like [[0]], but the old teacher said it came from the [[5]] of summer joy.
+
+Over a warm [[10]], she helped us [[11]] the new girl with the group. Soon even the [[8]] on the fence seemed [[7]] to listen. No one wanted the ugly [[6]], and no one tried to [[9]] anyone in the game. That was much less [[1]] than before.
+`
+  },
+  {
+    title: "Птицы До Ком. Часа",
+    template: `
+Before [[0]], the [[7]] and the [[8]] flew back to a [[9]] above our door. Their home looked [[1]], and on cold nights they seemed to [[3]] together.
+
+One child asked if he could [[2]] the truck, but he waited for my [[4]]. Inside, a broken [[6]] made a [[11]] sound, yet the small birds still seemed [[5]] on a soft [[10]] of leaves.
+`
+  },
+  {
+    title: "Работа В Долине",
+    template: `
+During our [[4]] in the mountain [[9]], rain became a real [[0]]. The path was [[6]], so I told my friend not to [[1]] the tired horse and to check its [[2]].
+
+We had to [[8]] boxes down the hill while a small [[7]] opened on a bush. A sudden [[5]] came when a [[10]] group passed nearby, but our simple [[11]] plan helped us stay calm. I was [[3]] glad we had one.
+`
+  },
+  {
+    title: "Лагерь У Ягод",
+    template: `
+The road was full of [[0]], and a [[1]] dog watched our camp with clear [[2]]. [[3]], the morning felt tense.
+
+Still, it was [[5]] for our [[7]] to [[6]] before a meal. One loud [[8]] refused, and the chief began to [[9]] him, but an old bell seemed to [[10]] peace instead. We chose a sweet [[11]] from the bush and moved on.
+`
+  },
+  {
+    title: "Снег И Память",
+    template: `
+A [[0]] began, yet my grandfather spoke about an [[1]] who loved winter walks. [[2]] the snow, he would [[3]] a drum and send a [[4]] into the gray sky.
+
+A [[5]] and a [[6]] often stood near the river. After his death, the family felt deep [[7]] and had to [[8]], but we did not [[9]] in the storm. We learned that [[10]] is not [[11]]; real happiness needs care and movement.
+`
+  },
+  {
+    title: "Тихая Тропа",
+    template: `
+On a quiet [[2]] path, I felt [[0]] and began to [[1]] about old trips. It was easy to fall into a daily [[3]], but the clean air helped me [[4]] that habit.
+
+The lake looked [[5]], the small house of [[6]] smelled sweet, and far away someone played a [[7]].
+`
+  }
+];
+
 const preparedWords = (window.WORDS || []).map((entry, index) => {
   const englishVariants = expandEnglishVariants([entry.english, ...(entry.acceptedAnswers || [])]);
   const russianVariants = uniqueValues([
@@ -55,9 +211,11 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
 });
 
 const wordGroups = buildGroups(preparedWords);
+const readingTexts = buildReadingTexts(wordGroups, READING_BLUEPRINTS);
 const persistent = loadProgress();
 
 const state = {
+  view: normalizeView(persistent.settings.view),
   mode: normalizeMode(persistent.settings.mode),
   autoSpeak: persistent.settings.autoSpeak,
   hardOnly: persistent.settings.hardOnly,
@@ -78,6 +236,12 @@ const els = {
   totalGroups: document.querySelector("#totalGroups"),
   averageRating: document.querySelector("#averageRating"),
   writingAccuracy: document.querySelector("#writingAccuracy"),
+  viewButtons: Array.from(document.querySelectorAll(".view-button")),
+  studyView: document.querySelector("#studyView"),
+  textsView: document.querySelector("#textsView"),
+  textsChip: document.querySelector("#textsChip"),
+  textsNote: document.querySelector("#textsNote"),
+  readingGrid: document.querySelector("#readingGrid"),
   modeButtons: Array.from(document.querySelectorAll(".mode-button")),
   groupSelect: document.querySelector("#groupSelect"),
   autoSpeak: document.querySelector("#autoSpeak"),
@@ -131,6 +295,18 @@ function init() {
 }
 
 function bindEvents() {
+  els.viewButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      if (state.view === button.dataset.view) {
+        return;
+      }
+
+      state.view = button.dataset.view;
+      render(false);
+      saveProgress();
+    });
+  });
+
   els.modeButtons.forEach((button) => {
     button.addEventListener("click", () => {
       if (state.mode === button.dataset.mode) {
@@ -285,6 +461,14 @@ function render(shouldAutoSpeak) {
     rebuildDeck();
   }
 
+  updateViewState();
+  updateSummaryStats();
+  renderReadingTexts();
+
+  if (state.view !== "study") {
+    return;
+  }
+
   const current = getCurrentEntry();
   const mode = MODES[state.mode];
 
@@ -293,7 +477,6 @@ function render(shouldAutoSpeak) {
   });
 
   els.groupSelect.value = state.selectedGroup;
-  updateSummaryStats();
   updateProgress();
   renderFeedback();
   renderRating(current);
@@ -311,6 +494,15 @@ function render(shouldAutoSpeak) {
   if (shouldAutoSpeak && state.autoSpeak) {
     speakEntry(current);
   }
+}
+
+function updateViewState() {
+  els.viewButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.view === state.view);
+  });
+
+  els.studyView.classList.toggle("hidden", state.view !== "study");
+  els.textsView.classList.toggle("hidden", state.view !== "texts");
 }
 
 function updateProgress() {
@@ -372,6 +564,48 @@ function renderRating(entry) {
   els.ratingButtons.forEach((button) => {
     button.classList.toggle("active", Number(button.dataset.rating) === rating);
   });
+}
+
+function renderReadingTexts() {
+  const orderedTexts = getOrderedReadingTexts();
+  const selectedReading = state.selectedGroup === "all"
+    ? null
+    : orderedTexts.find((text) => text.id === state.selectedGroup);
+
+  els.textsChip.textContent = `${readingTexts.length} текстов`;
+  els.textsNote.textContent = selectedReading
+    ? `${selectedReading.groupLabel} показана первой. Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.`
+    : "Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.";
+
+  els.readingGrid.innerHTML = orderedTexts.map((text) => `
+    <article class="reading-card${text.id === state.selectedGroup ? " selected" : ""}">
+      <div class="reading-head">
+        <h3 class="reading-title">${escapeHtml(text.title)}</h3>
+        <span class="reading-meta">${escapeHtml(text.groupLabel)} · ${text.wordCount} слов</span>
+      </div>
+      ${text.paragraphs.map((paragraph) => `<p>${paragraph}</p>`).join("")}
+    </article>
+  `).join("");
+}
+
+function getOrderedReadingTexts() {
+  if (state.selectedGroup === "all") {
+    return readingTexts.slice();
+  }
+
+  return readingTexts
+    .slice()
+    .sort((left, right) => {
+      if (left.id === state.selectedGroup) {
+        return -1;
+      }
+
+      if (right.id === state.selectedGroup) {
+        return 1;
+      }
+
+      return Number(left.id) - Number(right.id);
+    });
 }
 
 function markCard(remembered) {
@@ -623,11 +857,51 @@ function updateSummaryStats() {
   }
 }
 
+function buildReadingTexts(groups, blueprints) {
+  return groups.map((group, index) => {
+    const blueprint = blueprints[index] || makeFallbackReadingBlueprint(index);
+
+    return {
+      id: group.id,
+      groupLabel: group.label,
+      title: blueprint.title,
+      wordCount: group.words.length,
+      paragraphs: compileReadingTemplate(blueprint.template, group.words)
+    };
+  });
+}
+
+function compileReadingTemplate(template, words) {
+  return template
+    .trim()
+    .split(/\n\s*\n/)
+    .map((paragraph) => paragraph.replace(/\[\[(\d+)(?:\|([^[\]]+))?\]\]/g, (_match, index, customText) => {
+      const word = words[Number(index)];
+      const visibleText = customText || word.english;
+      return createGlossWord(word, visibleText);
+    }));
+}
+
+function createGlossWord(word, visibleText) {
+  const translation = word.russian;
+  const label = `${visibleText} - ${translation}`;
+
+  return `<span class="gloss-word" tabindex="0" data-translation="${escapeAttribute(translation)}" title="${escapeAttribute(label)}" aria-label="${escapeAttribute(label)}">${escapeHtml(visibleText)}</span>`;
+}
+
+function makeFallbackReadingBlueprint(index) {
+  return {
+    title: `Текст ${index + 1}`,
+    template: "This is a simple text."
+  };
+}
+
 function loadProgress() {
   const fallback = {
     ratings: {},
     stats: createDefaultStats(),
     settings: {
+      view: "study",
       autoSpeak: true,
       hardOnly: false,
       mode: "cards",
@@ -642,6 +916,7 @@ function loadProgress() {
       ratings: current.ratings && typeof current.ratings === "object" ? current.ratings : fallback.ratings,
       stats: { ...createDefaultStats(), ...(current.stats || {}) },
       settings: {
+        view: current.settings?.view ?? fallback.settings.view,
         autoSpeak: current.settings?.autoSpeak ?? fallback.settings.autoSpeak,
         hardOnly: current.settings?.hardOnly ?? fallback.settings.hardOnly,
         mode: current.settings?.mode ?? fallback.settings.mode,
@@ -653,9 +928,25 @@ function loadProgress() {
   const legacy = safeJsonParse(window.localStorage.getItem(LEGACY_STORAGE_KEY));
 
   if (legacy) {
+    return {
+      ratings: legacy.ratings && typeof legacy.ratings === "object" ? legacy.ratings : fallback.ratings,
+      stats: { ...createDefaultStats(), ...(legacy.stats || {}) },
+      settings: {
+        view: "study",
+        autoSpeak: legacy.settings?.autoSpeak ?? fallback.settings.autoSpeak,
+        hardOnly: legacy.settings?.hardOnly ?? fallback.settings.hardOnly,
+        mode: legacy.settings?.mode ?? fallback.settings.mode,
+        selectedGroup: legacy.settings?.selectedGroup ?? fallback.settings.selectedGroup
+      }
+    };
+  }
+
+  const older = safeJsonParse(window.localStorage.getItem(OLDER_STORAGE_KEY));
+
+  if (older) {
     const migratedRatings = {};
 
-    Object.entries(legacy.wordScores || {}).forEach(([wordId, score]) => {
+    Object.entries(older.wordScores || {}).forEach(([wordId, score]) => {
       migratedRatings[wordId] = legacyScoreToRating(score);
     });
 
@@ -663,15 +954,16 @@ function loadProgress() {
       ratings: migratedRatings,
       stats: {
         ...createDefaultStats(),
-        cardsReviewed: legacy.stats?.cardsReviewed || 0,
-        writingToEnglishAnswered: legacy.stats?.writingAnswered || 0,
-        writingToEnglishCorrect: legacy.stats?.writingCorrect || 0,
-        currentStreak: legacy.stats?.currentStreak || 0,
-        bestStreak: legacy.stats?.bestStreak || 0
+        cardsReviewed: older.stats?.cardsReviewed || 0,
+        writingToEnglishAnswered: older.stats?.writingAnswered || 0,
+        writingToEnglishCorrect: older.stats?.writingCorrect || 0,
+        currentStreak: older.stats?.currentStreak || 0,
+        bestStreak: older.stats?.bestStreak || 0
       },
       settings: {
-        autoSpeak: legacy.settings?.autoSpeak ?? fallback.settings.autoSpeak,
-        hardOnly: legacy.settings?.hardOnly ?? fallback.settings.hardOnly,
+        view: "study",
+        autoSpeak: older.settings?.autoSpeak ?? fallback.settings.autoSpeak,
+        hardOnly: older.settings?.hardOnly ?? fallback.settings.hardOnly,
         mode: "cards",
         selectedGroup: fallback.settings.selectedGroup
       }
@@ -686,6 +978,7 @@ function saveProgress() {
     ratings: state.ratings,
     stats: state.stats,
     settings: {
+      view: state.view,
       autoSpeak: state.autoSpeak,
       hardOnly: state.hardOnly,
       mode: state.mode,
@@ -853,4 +1146,20 @@ function normalizeSelectedGroup(value) {
 
 function normalizeMode(mode) {
   return MODES[mode] ? mode : "cards";
+}
+
+function normalizeView(view) {
+  return view === "texts" ? "texts" : "study";
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value).replace(/'/g, "&#39;");
 }

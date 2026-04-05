@@ -15,6 +15,7 @@
           Новые слова из ваших фото уже в тренажере. Теперь они разбиты на группы по 12 слов,
           у каждого слова есть рейтинг знания, а тренировка идет в трех режимах:
           карточки, письмо с русского на английский и письмо с английского на русский.
+          Появилась и отдельная вкладка с короткими текстами.
         </p>
 
         <div class="hero-stats">
@@ -37,132 +38,157 @@
         </div>
       </header>
 
-      <section class="panel controls">
-        <div class="mode-switch" role="tablist" aria-label="Режимы тренировки">
-          <button class="mode-button active" data-mode="cards" type="button">Карточки памяти</button>
-          <button class="mode-button" data-mode="write-en" type="button">Русский → English</button>
-          <button class="mode-button" data-mode="write-ru" type="button">English → Русский</button>
-        </div>
-
-        <div class="control-row">
-          <label class="select-field" for="groupSelect">
-            <span>Группа слов</span>
-            <select id="groupSelect"></select>
-          </label>
-
-          <label class="toggle">
-            <input id="autoSpeak" type="checkbox" checked>
-            <span>Авто-озвучка</span>
-          </label>
-
-          <label class="toggle">
-            <input id="hardOnly" type="checkbox">
-            <span>Только сложные слова</span>
-          </label>
-
-          <div class="control-buttons">
-            <button class="ghost-button" id="shuffleButton" type="button">Перемешать</button>
-            <button class="ghost-button" id="resetButton" type="button">Сбросить прогресс</button>
-          </div>
+      <section class="panel page-tabs">
+        <div class="view-switch" role="tablist" aria-label="Основные вкладки">
+          <button class="view-button active" data-view="study" type="button">Учить слова</button>
+          <button class="view-button" data-view="texts" type="button">Читать тексты</button>
         </div>
       </section>
 
-      <main class="panel trainer" id="trainer">
-        <div class="progress-row">
-          <div>
-            <p class="mode-label" id="modeLabel">Карточки памяти</p>
-            <h2 id="promptLabel">Вспомните русский перевод, не открывая подсказку</h2>
+      <div id="studyView">
+        <section class="panel controls">
+          <div class="mode-switch" role="tablist" aria-label="Режимы тренировки">
+            <button class="mode-button active" data-mode="cards" type="button">Карточки памяти</button>
+            <button class="mode-button" data-mode="write-en" type="button">Русский → English</button>
+            <button class="mode-button" data-mode="write-ru" type="button">English → Русский</button>
           </div>
-          <div class="session-chips">
-            <div class="progress-chip" id="groupChip">Группа 1</div>
-            <div class="progress-chip" id="progressChip">1 / 1</div>
+
+          <div class="control-row">
+            <label class="select-field" for="groupSelect">
+              <span>Группа слов</span>
+              <select id="groupSelect"></select>
+            </label>
+
+            <label class="toggle">
+              <input id="autoSpeak" type="checkbox" checked>
+              <span>Авто-озвучка</span>
+            </label>
+
+            <label class="toggle">
+              <input id="hardOnly" type="checkbox">
+              <span>Только сложные слова</span>
+            </label>
+
+            <div class="control-buttons">
+              <button class="ghost-button" id="shuffleButton" type="button">Перемешать</button>
+              <button class="ghost-button" id="resetButton" type="button">Сбросить прогресс</button>
+            </div>
           </div>
-        </div>
-
-        <section class="card-shell" id="cardShell">
-          <article class="word-card" id="wordCard">
-            <div class="card-meta">
-              <span class="meta-pill" id="directionChip">English → Russian</span>
-              <span class="meta-pill meta-pill-strong" id="ratingBadge">0 / 5</span>
-            </div>
-
-            <p class="card-caption" id="cardCaption">Английское слово</p>
-            <h3 id="wordText">Word</h3>
-            <p class="word-hint" id="wordHint">
-              Нажмите "Показать перевод", когда захотите проверить себя.
-            </p>
-
-            <div class="translation-box hidden" id="translationBox">
-              <p class="card-caption">Перевод</p>
-              <p class="translation-text" id="translationText">Перевод</p>
-            </div>
-
-            <div class="rating-panel">
-              <p class="card-caption">Насколько хорошо вы знаете это слово</p>
-              <div class="rating-buttons" id="ratingButtons">
-                <button class="rating-button" data-rating="0" type="button">0</button>
-                <button class="rating-button" data-rating="1" type="button">1</button>
-                <button class="rating-button" data-rating="2" type="button">2</button>
-                <button class="rating-button" data-rating="3" type="button">3</button>
-                <button class="rating-button" data-rating="4" type="button">4</button>
-                <button class="rating-button" data-rating="5" type="button">5</button>
-              </div>
-            </div>
-          </article>
         </section>
 
-        <form class="writing-form hidden" id="writingForm" autocomplete="off">
-          <label class="input-label" id="answerLabel" for="answerInput">Напишите ответ по-английски</label>
-          <input
-            id="answerInput"
-            type="text"
-            inputmode="text"
-            autocapitalize="off"
-            autocorrect="off"
-            spellcheck="false"
-            placeholder="Введите слово или фразу"
-          >
-        </form>
+        <main class="panel trainer" id="trainer">
+          <div class="progress-row">
+            <div>
+              <p class="mode-label" id="modeLabel">Карточки памяти</p>
+              <h2 id="promptLabel">Вспомните русский перевод, не открывая подсказку</h2>
+            </div>
+            <div class="session-chips">
+              <div class="progress-chip" id="groupChip">Группа 1</div>
+              <div class="progress-chip" id="progressChip">1 / 1</div>
+            </div>
+          </div>
 
-        <div class="feedback hidden" id="feedback"></div>
+          <section class="card-shell" id="cardShell">
+            <article class="word-card" id="wordCard">
+              <div class="card-meta">
+                <span class="meta-pill" id="directionChip">English → Russian</span>
+                <span class="meta-pill meta-pill-strong" id="ratingBadge">0 / 5</span>
+              </div>
 
-        <div class="actions" id="cardActions">
-          <button class="secondary-button" id="speakCardButton" type="button">Слушать</button>
-          <button class="secondary-button" id="revealButton" type="button">Показать перевод</button>
-          <button class="primary-button hidden" id="knowButton" type="button">Помню</button>
-          <button class="danger-button hidden" id="repeatButton" type="button">Повторить</button>
+              <p class="card-caption" id="cardCaption">Английское слово</p>
+              <h3 id="wordText">Word</h3>
+              <p class="word-hint" id="wordHint">
+                Нажмите "Показать перевод", когда захотите проверить себя.
+              </p>
+
+              <div class="translation-box hidden" id="translationBox">
+                <p class="card-caption">Перевод</p>
+                <p class="translation-text" id="translationText">Перевод</p>
+              </div>
+
+              <div class="rating-panel">
+                <p class="card-caption">Насколько хорошо вы знаете это слово</p>
+                <div class="rating-buttons" id="ratingButtons">
+                  <button class="rating-button" data-rating="0" type="button">0</button>
+                  <button class="rating-button" data-rating="1" type="button">1</button>
+                  <button class="rating-button" data-rating="2" type="button">2</button>
+                  <button class="rating-button" data-rating="3" type="button">3</button>
+                  <button class="rating-button" data-rating="4" type="button">4</button>
+                  <button class="rating-button" data-rating="5" type="button">5</button>
+                </div>
+              </div>
+            </article>
+          </section>
+
+          <form class="writing-form hidden" id="writingForm" autocomplete="off">
+            <label class="input-label" id="answerLabel" for="answerInput">Напишите ответ по-английски</label>
+            <input
+              id="answerInput"
+              type="text"
+              inputmode="text"
+              autocapitalize="off"
+              autocorrect="off"
+              spellcheck="false"
+              placeholder="Введите слово или фразу"
+            >
+          </form>
+
+          <div class="feedback hidden" id="feedback"></div>
+
+          <div class="actions" id="cardActions">
+            <button class="secondary-button" id="speakCardButton" type="button">Слушать</button>
+            <button class="secondary-button" id="revealButton" type="button">Показать перевод</button>
+            <button class="primary-button hidden" id="knowButton" type="button">Помню</button>
+            <button class="danger-button hidden" id="repeatButton" type="button">Повторить</button>
+          </div>
+
+          <div class="actions hidden" id="writingActions">
+            <button class="secondary-button" id="speakWritingButton" type="button">Слушать</button>
+            <button class="primary-button" id="checkButton" type="button">Проверить</button>
+            <button class="secondary-button" id="showAnswerButton" type="button">Показать ответ</button>
+            <button class="accent-button hidden" id="nextButton" type="button">Дальше</button>
+          </div>
+
+          <div class="stats-strip">
+            <div class="mini-stat">
+              <span id="cardsReviewed">0</span>
+              <small>карточек пройдено</small>
+            </div>
+            <div class="mini-stat">
+              <span id="writingToEnglishAnswered">0</span>
+              <small>ответов русский → english</small>
+            </div>
+            <div class="mini-stat">
+              <span id="writingToRussianAnswered">0</span>
+              <small>ответов english → русский</small>
+            </div>
+            <div class="mini-stat">
+              <span id="bestStreak">0</span>
+              <small>лучший стрик</small>
+            </div>
+          </div>
+
+          <p class="support-note" id="supportNote">
+            Произношение работает через встроенный голос браузера.
+          </p>
+        </main>
+      </div>
+
+      <section class="panel texts-panel hidden" id="textsView">
+        <div class="texts-head">
+          <div>
+            <p class="mode-label">Тексты</p>
+            <h2>Короткие истории со всеми вашими словами</h2>
+          </div>
+          <div class="progress-chip" id="textsChip">19 текстов</div>
         </div>
 
-        <div class="actions hidden" id="writingActions">
-          <button class="secondary-button" id="speakWritingButton" type="button">Слушать</button>
-          <button class="primary-button" id="checkButton" type="button">Проверить</button>
-          <button class="secondary-button" id="showAnswerButton" type="button">Показать ответ</button>
-          <button class="accent-button hidden" id="nextButton" type="button">Дальше</button>
-        </div>
-
-        <div class="stats-strip">
-          <div class="mini-stat">
-            <span id="cardsReviewed">0</span>
-            <small>карточек пройдено</small>
-          </div>
-          <div class="mini-stat">
-            <span id="writingToEnglishAnswered">0</span>
-            <small>ответов русский → english</small>
-          </div>
-          <div class="mini-stat">
-            <span id="writingToRussianAnswered">0</span>
-            <small>ответов english → русский</small>
-          </div>
-          <div class="mini-stat">
-            <span id="bestStreak">0</span>
-            <small>лучший стрик</small>
-          </div>
-        </div>
-
-        <p class="support-note" id="supportNote">
-          Произношение работает через встроенный голос браузера.
+        <p class="texts-note" id="textsNote">
+          Наводите курсор на выделенное слово, чтобы сразу увидеть перевод. На телефоне можно нажать на слово.
         </p>
-      </main>
+
+        <div class="reading-grid" id="readingGrid"></div>
+      </section>
     </div>
 
     <script src="words.js"></script>
