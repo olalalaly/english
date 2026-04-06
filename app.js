@@ -191,6 +191,81 @@ The lake looked [[5]], the small house of [[6]] smelled sweet, and far away some
   }
 ];
 
+const EXTRA_READING_BLUEPRINTS = {
+  "20": {
+    title: "Совет Врача",
+    template: `
+The doctor gave me a [[0]] with [[1]], and I had to [[4]] my food very carefully. A small [[2]] can turn into [[5]], and soon a person may feel [[6]].
+
+One [[3]] may help for a moment, but the effect can be too [[7]]. In the brain, [[8]] is delicate, and some medicine has an [[9]] effect that may even [[10]] recovery. I took one [[11]] of water and went home.
+`
+  },
+  "21": {
+    title: "Живот И Кухня",
+    template: `
+My [[0]] and my [[1]] felt better when I stopped trying [[2]] simple signs. The doctor saw a [[3]] [[4]] in one [[5]] problem and said she could [[6]] the pain.
+
+It sounded [[7]], but the [[8]] of recovery were real. A [[9]] smell came from the old soup, so I had to [[10]] clean water in a [[11]] and rest.
+`
+  },
+  "22": {
+    title: "Тихая Кухня",
+    template: `
+The child sat on a [[1]] with [[2]] and tried not [[0]]. One loud sound was enough [[3]] her.
+
+In the kitchen we had [[4]] the plan because a broken pipe could [[5]] the room. We used the pump [[6]] the water, did it [[7]], and kept a [[8]] rhythm. Every [[9]] in the room changed on the [[10]], and that [[11]] detail helped us notice the problem.
+`
+  },
+  "23": {
+    title: "Шум В Лаборатории",
+    template: `
+During the [[1]], our team kept a [[0]] mood even when papers flew [[2]]. Small ideas began [[3]], while one voice kept [[4]] between fear and hope.
+
+A band of [[5]] held the notes together, but [[6]] from the fire stained the page, and black [[7]] spread over the map. I had to [[8]] the tools, breathe a [[9]], hear the chair [[10]], and stay [[11]].
+`
+  },
+  "24": {
+    title: "Эхо В Пещере",
+    template: `
+Deep [[0]] the hills, we found a [[5]]. I had to [[2]] at a weak light, then [[10]] at the wall and [[11]] the old drawings.
+
+One child started [[6]], another tried [[7]] the lamp, and everyone stood [[8]]. I told them not to play [[1]] here, not [[3]] the walk, and to [[4]] the quiet air. In the end I used both hands [[9]] cold water from the stone.
+`
+  },
+  "25": {
+    title: "Ночь На Дороге",
+    template: `
+We were [[11]] when the [[2]] came. A bright [[3]] crossed the sky, and a white [[4]] moved down the hill. Cold [[0]] covered the road, and everyone felt [[1]].
+
+A [[5]] still tried to work before [[6]], keeping a [[7]] of tea nearby. It was a [[8]] effort in the middle of the wild night. Even the trees looked [[9]] [[10]] the storm.
+`
+  },
+  "26": {
+    title: "Темная Поездка",
+    template: `
+There was a strange [[0]] on the road when my [[7]] said, "[[3]]." We wanted [[1]] food from the closed shop, not [[2]] it.
+
+Still, the town felt [[4]], and the [[5]] behind the houses seemed endless. I chose [[6]] the cold soup while one light began [[8]]. A leaf moved as if someone wanted [[9]] my shoulder, then another branch tried [[10]] my hand, and our fear vanished [[11]].
+`
+  },
+  "27": {
+    title: "Странный Рисунок",
+    template: `
+One silly [[8]] at school began when somebody drew an [[3]] and a group of [[4]] on the [[0]]. The picture had too many [[5]], a big [[1]], and even an [[2]] in the corner.
+
+A teacher said the joke might [[10]] people, and one pupil already felt [[9]]. She called the drawing a [[6]] of bad humor, asked us [[7]], because some children were [[11|scared of]] it, and sent us back to work.
+`
+  },
+  "28": {
+    title: "Просто Попросить Помощи",
+    template: `
+The child wanted [[0]] in the mirror, but he also had to [[1]] his fear. First he tried [[2]] the toy from under the bed.
+
+In the end he chose [[3]], and his mother came [[5|to release]] the stuck box. They laughed [[4]], and the room felt safe again.
+`
+  }
+};
+
 const preparedWords = (window.WORDS || []).map((entry, index) => {
   const englishVariants = expandEnglishVariants([entry.english, ...(entry.acceptedAnswers || [])]);
   const russianVariants = uniqueValues([
@@ -206,7 +281,7 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
     speakText: entry.speakText || entry.english,
     acceptedEnglishAnswers: englishVariants.map(normalizeEnglish).filter(Boolean),
     acceptedRussianAnswers: russianVariants.map(normalizeRussian).filter(Boolean),
-    groupNumber: Math.floor(index / GROUP_SIZE) + 1
+    groupNumber: entry.group || Math.floor(index / GROUP_SIZE) + 1
   };
 });
 
@@ -859,7 +934,7 @@ function updateSummaryStats() {
 
 function buildReadingTexts(groups, blueprints) {
   return groups.map((group, index) => {
-    const blueprint = blueprints[index] || makeFallbackReadingBlueprint(index);
+    const blueprint = blueprints[index] || EXTRA_READING_BLUEPRINTS[group.id] || makeFallbackReadingBlueprint(group);
 
     return {
       id: group.id,
@@ -877,7 +952,12 @@ function compileReadingTemplate(template, words) {
     .split(/\n\s*\n/)
     .map((paragraph) => paragraph.replace(/\[\[(\d+)(?:\|([^[\]]+))?\]\]/g, (_match, index, customText) => {
       const word = words[Number(index)];
-      const visibleText = customText || word.english;
+      const visibleText = customText || word?.english || "";
+
+      if (!word) {
+        return escapeHtml(visibleText);
+      }
+
       return createGlossWord(word, visibleText);
     }));
 }
@@ -889,10 +969,27 @@ function createGlossWord(word, visibleText) {
   return `<span class="gloss-word" tabindex="0" data-translation="${escapeAttribute(translation)}" title="${escapeAttribute(label)}" aria-label="${escapeAttribute(label)}">${escapeHtml(visibleText)}</span>`;
 }
 
-function makeFallbackReadingBlueprint(index) {
+function makeFallbackReadingBlueprint(group) {
+  const placeholders = group.words.map((_, index) => `[[${index}]]`);
+  const chunks = [];
+
+  for (let index = 0; index < placeholders.length; index += 4) {
+    chunks.push(placeholders.slice(index, index + 4));
+  }
+
   return {
-    title: `Текст ${index + 1}`,
-    template: "This is a simple text."
+    title: `Текст Для ${group.label}`,
+    template: chunks
+      .map((chunk, index) => {
+        const intro = index === 0
+          ? "In this short story"
+          : index === 1
+            ? "Later in the same scene"
+            : "At the end";
+
+        return `${intro}, we meet ${chunk.join(", ")}.`;
+      })
+      .join("\n\n")
   };
 }
 
@@ -1002,18 +1099,23 @@ function createDefaultStats() {
 }
 
 function buildGroups(words) {
-  const groups = [];
+  const grouped = new Map();
 
-  for (let index = 0; index < words.length; index += GROUP_SIZE) {
-    const slice = words.slice(index, index + GROUP_SIZE);
-    groups.push({
-      id: String(groups.length + 1),
-      label: `Группа ${groups.length + 1}`,
-      words: slice
-    });
-  }
+  words.forEach((word) => {
+    const id = String(word.groupNumber);
 
-  return groups;
+    if (!grouped.has(id)) {
+      grouped.set(id, {
+        id,
+        label: `Группа ${id}`,
+        words: []
+      });
+    }
+
+    grouped.get(id).words.push(word);
+  });
+
+  return [...grouped.values()].sort((left, right) => Number(left.id) - Number(right.id));
 }
 
 function shuffle(items) {
