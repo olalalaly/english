@@ -40,9 +40,9 @@ const READING_BLUEPRINTS = [
   {
     title: "Ужин И Ферма",
     template: `
-The [[0]] was strong when I saw an [[1]] bowl of [[3]] near a hot [[4]]. The salad looked like a [[5]] of colors.
+The [[0]] was strong when I saw an [[1]] bowl of [[3]] near a hot [[4]]. The dish looked like a bright [[5]] of colors.
 
-On the farm, the old machine could [[2]] a hand, so we stayed away. The [[6]] moved slowly, and one [[7]] animal could not run. The [[8]] cook knew the meal would [[9]] a lot, yet it would still [[10]] the whole family and help everyone [[11]] enough food.
+On the farm, the old machine could [[2|mutilate]] a hand, so we stayed away from the [[6]]. One [[7]] animal could not run, but the [[8]] cook said the meal would [[9|cost]] a lot, the table would [[10|fit]] the whole family, and everyone would still [[11|get]] enough food.
 `
   },
   {
@@ -50,15 +50,15 @@ On the farm, the old machine could [[2]] a hand, so we stayed away. The [[6]] mo
     template: `
 On [[1]] night, we sat on the [[3]] and watched a good [[1]]. The old [[2]] looked dusty, but the story was still clear.
 
-One rude man tried to [[0]] my friend, and she told him, "[[4]]." Another person shouted, "[[5]]," but we said, "[[6]]." It is hard to [[7]] peace in a room like that, yet I still [[8]] my calm friend. I do not [[9]] her; I think her long [[10]] of patience can [[11]] to every friendship.
+One rude man tried to [[0|hit on]] my friend, and she told him, "[[4]]." Another person shouted, "[[5]]," but we said, "[[6]]." It is hard to [[7|maintain]] peace in a room like that, yet I still [[8|admire]] my calm friend. I do not [[9|envy]] her, and our friendship has a long [[10]] because people like her [[11|contribute]] so much.
 `
   },
   {
     title: "Плохая Кухня",
     template: `
-The best [[0]] for a bad kitchen is simple cleaning. During [[1]], a child learns why a [[4]] full of old soup and white [[3]] can smell [[5]].
+The best [[0]] for a dirty kitchen is simple cleaning. During [[1]], a child learns why a [[4]] full of old soup and white [[3]] can smell [[5]].
 
-If someone [[6|casts]] trash on the floor, I get [[2]]. A rich man may [[7]] great [[8]], but without a [[11]] to help, he will not [[9]] people around him. His [[10]] words can ruin the whole day.
+If someone [[6|casts]] trash on the floor, I get [[2]]. A rich man may [[7|possess]] great [[8]], but without real [[11]], he will not [[9|gather]] people around him and will still use [[10]] words.
 `
   },
   {
@@ -66,15 +66,15 @@ If someone [[6|casts]] trash on the floor, I get [[2]]. A rich man may [[7]] gre
     template: `
 At the [[2]] stage of the museum job, I felt [[4]] because a worker had [[5]] through an old model and exposed dry [[6]] inside.
 
-The room [[8]] to our office was quiet, and I had to [[9]] papers for [[10]] while I [[11]] soup in a cup. One artist sent a small [[7]] instead of a real [[3]], and I felt a [[1]] pride for him; [[0]], I kept the piece.
+The room [[8]] to our office was quiet, and I had to [[9|investigate]] papers for [[10]] while I [[11|stirred]] soup in a cup. One artist sent a small [[7]] instead of a real [[3]], and I felt [[1]] pride for him; [[0]], I kept the piece.
 `
   },
   {
     title: "Дом У Озера",
     template: `
-We went to the [[0]] in a [[1]] while a [[2]] moved far away. I wanted to [[3]] a fish, but then I heard a [[4]] near the reeds.
+We went to the [[0]] in a [[1]] while a [[2]] moved far away. I wanted to [[3|catch]] a fish, but then I heard a [[4]] near the reeds.
 
-The [[5]] group stopped, and one boy tried to [[6]] the boat wall in fear. We told him to [[7]] the heavy [[8]] box and to [[9]] the old man who lived by the [[11]]. Near his door a [[10]] grew alone.
+The [[5]] group stopped, and one boy tried to [[6|punch]] the side of the boat in fear. We told him to [[7|get rid of]] the heavy [[8]] box and to [[9|pay a visit to]] the old man who lived by the [[11]]. Near his door, a [[10]] grew alone.
 `
   },
   {
@@ -90,15 +90,15 @@ At school, one rude [[3]] missed the [[4]] in the game. The kind [[7]] beside me
     template: `
 My [[0]] and [[1]] came for lunch. We ate [[2]] on bread and a hot [[7]] with [[5]].
 
-Later we made a cake with sweet [[4]], cold [[6]], and bright [[9]]. A child hit his [[3]] on a [[8]] near the [[10]], so I had to [[11]] ice into small pieces.
+Later we made a cake with sweet [[4]], cold [[6]], and bright [[9]]. A child hit his [[3]] on a [[8]] near the [[10]], so I had to [[11|pound]] ice into small pieces.
 `
   },
   {
     title: "Урок Географии",
     template: `
-Our teacher did not [[0]] us; her [[1]] simply meant that we had to stay [[4]] and do the work. She told us not to [[2]] the quiet boy, and asked me to [[3]] a map from paper.
+Our teacher did not [[0|persecute]] us; her [[1]] simply meant that we had to stay [[4]] and do the work. She told us not to [[2|shun]] the quiet boy and asked me to [[3|snip]] a map from paper.
 
-First we drew a [[6]] of stars, then a line from the [[8]] to the [[9]], with the [[10]] in the middle. A black [[11]] sat on the window while we talked about a train [[5]] outside.
+First we drew a [[6]] of stars, then a line from the [[8]] to the [[9]], with the [[10]] in the middle. A black [[11]] sat on the window while we talked about the [[7]] of a train [[5]] outside.
 `
   },
   {
@@ -106,7 +106,7 @@ First we drew a [[6]] of stars, then a line from the [[8]] to the [[9]], with th
     template: `
 In my [[11]], I keep a space book in the [[9]] beside a fresh [[8]]. It shows [[1]], [[2]], [[0]], and [[3]] under the same [[4]].
 
-The pages explain the [[5]] and the [[6]] in simple words. One small [[7]] in the book made me smile: after all that science, the writer told the reader not to [[10]] but to keep learning.
+The pages explain the [[5]] and the [[6]] in simple words. One small [[7]] in the book made me smile: after all that science, the writer told the reader not to [[10|loaf]] but to keep learning.
 `
   },
   {
@@ -114,13 +114,13 @@ The pages explain the [[5]] and the [[6]] in simple words. One small [[7]] in th
     template: `
 Our small room felt [[3]] because a [[4]] with a [[5]] sat by the fire. Her [[6]] face became [[2]] when a wet [[0]] ran in.
 
-It was a [[1]], dirty and tired, and its fur looked [[7]] under the light. Still, cleaning it was [[8]], because it began to [[9]] a soft smell of soap. I gave the bowl a [[10]], but the floor stayed [[11]].
+It was a [[1]], dirty and tired, and its fur looked [[7]] under the light. Still, cleaning it was [[8]], because it began to [[9|give off]] a soft smell of soap. I gave the bowl a [[10]], but the floor stayed [[11]].
 `
   },
   {
     title: "Шумная Команда",
     template: `
-During my [[10]], a problem began to [[3]] in our team [[11]]. One loud [[7]] tried to [[2]] every task and did not stop to [[5]] people.
+During my [[10]], a problem began to [[3|occur]] in our team [[11]]. One loud [[7]] tried to [[2|retard]] every task and did not stop [[5|bothering]] people.
 
 We made a [[6]] and, [[9]], everyone wanted less noise and more light. Too much [[8]] of private data would be a [[4]], because it could hurt our [[0]] peace. A calm leader with [[1]] patience fixed it.
 `
@@ -136,7 +136,7 @@ Later at night we looked for [[6]], [[7]], [[8]], and [[9]] in a book. My little
   {
     title: "Старый Клуб",
     template: `
-At the old [[1]], the [[10]] took a [[0]] of tea and looked at a broken door. Someone had used a [[2]] and a [[6]] to open it, and the lock began to [[7]].
+At the old [[1]], the [[10]] took a [[0]] of tea and looked at a broken door. Someone had used a [[2]] and a [[6]] to open it, and the lock began to [[7|snap]].
 
 Inside we found [[8]] trash, bad food, and one [[5]] asleep on a [[9]] chair. His [[4]] note on the wall made everyone quiet. The [[3]] of the mess would be hard, and the rain made conditions more [[11]].
 `
@@ -144,25 +144,25 @@ Inside we found [[8]] trash, bad food, and one [[5]] asleep on a [[9]] chair. Hi
   {
     title: "Летний Двор",
     template: `
-The children kept [[2]] in the yard, and one boy loved to [[3]] until dinner. Their [[4]] felt endless, almost like [[0]], but the old teacher said it came from the [[5]] of summer joy.
+The children kept [[2]] in the yard, and one boy loved to [[3|skylark]] until dinner. Their [[4]] felt endless, almost like [[0]], but the old teacher said it came from the [[5]] of summer joy.
 
-Over a warm [[10]], she helped us [[11]] the new girl with the group. Soon even the [[8]] on the fence seemed [[7]] to listen. No one wanted the ugly [[6]], and no one tried to [[9]] anyone in the game. That was much less [[1]] than before.
+Over a warm [[10]], she helped us [[11|acquaint]] the new girl with the group. Soon even the [[8]] on the fence seemed [[7]] to listen. No one wanted the ugly [[6]], and no one tried to [[9|beat]] anyone in the game. That was much less [[1]] than before.
 `
   },
   {
     title: "Птицы До Ком. Часа",
     template: `
-Before [[0]], the [[7]] and the [[8]] flew back to a [[9]] above our door. Their home looked [[1]], and on cold nights they seemed to [[3]] together.
+Before [[0]], the [[7]] and the [[8]] flew back to a [[9]] above our door. Their home looked [[1]], and on cold nights they seemed to [[3|snuggle]] together.
 
-One child asked if he could [[2]] the truck, but he waited for my [[4]]. Inside, a broken [[6]] made a [[11]] sound, yet the small birds still seemed [[5]] on a soft [[10]] of leaves.
+One child asked if he could [[2|hop in]] the truck, but he waited for my [[4]]. Inside, a broken [[6]] made a [[11]] sound, yet the small birds still seemed to [[5|thrive]] on a soft [[10]] of leaves.
 `
   },
   {
     title: "Работа В Долине",
     template: `
-During our [[4]] in the mountain [[9]], rain became a real [[0]]. The path was [[6]], so I told my friend not to [[1]] the tired horse and to check its [[2]].
+During our [[4]] in the mountain [[9]], rain became a real [[0]]. The path was [[6]], so I told my friend not to [[1|nag]] the tired horse and to check its [[2]].
 
-We had to [[8]] boxes down the hill while a small [[7]] opened on a bush. A sudden [[5]] came when a [[10]] group passed nearby, but our simple [[11]] plan helped us stay calm. I was [[3]] glad we had one.
+We had to [[8|lug]] boxes down the hill while a small [[7]] opened on a bush. A sudden [[5]] came when a [[10]] group passed nearby, but our simple [[11]] plan helped us stay calm. [[3]], we had practiced it.
 `
   },
   {
@@ -170,21 +170,21 @@ We had to [[8]] boxes down the hill while a small [[7]] opened on a bush. A sudd
     template: `
 The road was full of [[0]], and a [[1]] dog watched our camp with clear [[2]]. [[3]], the morning felt tense.
 
-Still, it was [[5]] for our [[7]] to [[6]] before a meal. One loud [[8]] refused, and the chief began to [[9]] him, but an old bell seemed to [[10]] peace instead. We chose a sweet [[11]] from the bush and moved on.
+Still, it was [[5]] for our [[7]] to [[6|kneel]] before a meal. One loud [[8]] refused, and the chief began to [[9|condemn]] him, but an old bell seemed to [[10|herald]] peace instead. We chose a sweet [[11]] from the bush and moved on.
 `
   },
   {
     title: "Снег И Память",
     template: `
-A [[0]] began, yet my grandfather spoke about an [[1]] who loved winter walks. [[2]] the snow, he would [[3]] a drum and send a [[4]] into the gray sky.
+A [[0]] began, yet my grandfather spoke about an [[1]] who loved winter walks. [[2]] the snow, he would [[3|strike]] a drum and send a [[4]] into the gray sky.
 
-A [[5]] and a [[6]] often stood near the river. After his death, the family felt deep [[7]] and had to [[8]], but we did not [[9]] in the storm. We learned that [[10]] is not [[11]]; real happiness needs care and movement.
+A [[5]] and a [[6]] often stood near the river. After his death, the family felt deep [[7]] and had to [[8|grieve]], but we did not [[9|get lost]] in the storm. We learned that [[10]] is not [[11]]; real happiness needs care and movement.
 `
   },
   {
     title: "Тихая Тропа",
     template: `
-On a quiet [[2]] path, I felt [[0]] and began to [[1]] about old trips. It was easy to fall into a daily [[3]], but the clean air helped me [[4]] that habit.
+On a quiet [[2]] path, I felt [[0]] and began to [[1|reminisce]] about old trips. It was easy to fall into a daily [[3]], but the clean air helped me [[4|unthink]] that habit.
 
 The lake looked [[5]], the small house of [[6]] smelled sweet, and far away someone played a [[7]].
 `
@@ -195,41 +195,41 @@ const EXTRA_READING_BLUEPRINTS = {
   "20": {
     title: "Совет Врача",
     template: `
-The doctor gave me a [[0]] with [[1]], and I had to [[4]] my food very carefully. A small [[2]] can turn into [[5]], and soon a person may feel [[6]].
+The doctor gave me a [[0]] with [[1]], and I had to [[4|consider]] my food very carefully. A small [[2]] can turn into [[5]], and soon a person may feel [[6]].
 
-One [[3]] may help for a moment, but the effect can be too [[7]]. In the brain, [[8]] is delicate, and some medicine has an [[9]] effect that may even [[10]] recovery. I took one [[11]] of water and went home.
+One [[3]] may help for a moment, but the effect can be too [[7]]. In the brain, [[8]] is delicate, and some medicine has an [[9]] effect that may even [[10|enhance]] recovery. I took one [[11]] of water and went home.
 `
   },
   "21": {
     title: "Живот И Кухня",
     template: `
-My [[0]] and my [[1]] felt better when I stopped trying [[2]] simple signs. The doctor saw a [[3]] [[4]] in one [[5]] problem and said she could [[6]] the pain.
+My [[0]] and my [[1]] felt better when I stopped trying to [[2|overlook]] simple signs. The doctor saw a [[3]] [[4]] in one [[5]] problem and said she could [[6|alleviate]] the pain.
 
-It sounded [[7]], but the [[8]] of recovery were real. A [[9]] smell came from the old soup, so I had to [[10]] clean water in a [[11]] and rest.
+It sounded [[7]], but the [[8]] of recovery were real. A [[9]] smell came from the old soup, so I had to [[10|fetch]] clean water in a [[11]] and rest.
 `
   },
   "22": {
     title: "Тихая Кухня",
     template: `
-The child sat on a [[1]] with [[2]] and tried not [[0]]. One loud sound was enough [[3]] her.
+The child sat on a [[1]] with [[2]] and tried not to [[0|tumble]]. One loud sound was enough to [[3|frighten]] her.
 
-In the kitchen we had [[4]] the plan because a broken pipe could [[5]] the room. We used the pump [[6]] the water, did it [[7]], and kept a [[8]] rhythm. Every [[9]] in the room changed on the [[10]], and that [[11]] detail helped us notice the problem.
+In the kitchen, we had to [[4|alter]] the plan because a broken pipe could [[5|disrupt]] the room. We used the pump to [[6|pump out]] the water, did it [[7]], and kept a [[8]] rhythm. Every [[9]] in the room changed on the [[10]], and that [[11]] made the problem easy to notice.
 `
   },
   "23": {
     title: "Шум В Лаборатории",
     template: `
-During the [[1]], our team kept a [[0]] mood even when papers flew [[2]]. Small ideas began [[3]], while one voice kept [[4]] between fear and hope.
+During the [[1]], our team kept a [[0]] mood even when papers flew [[2]]. Small children began [[3|clustering up]], while one voice kept [[4|wavering]] between fear and hope.
 
-A band of [[5]] held the notes together, but [[6]] from the fire stained the page, and black [[7]] spread over the map. I had to [[8]] the tools, breathe a [[9]], hear the chair [[10]], and stay [[11]].
+A band of [[5]] held the notes together, but [[6]] from the fire stained the page, and black [[7]] spread over the map. I had to [[8|lay out]] the tools, breathe a [[9]], hear the chair [[10|squeak]], and stay [[11]].
 `
   },
   "24": {
     title: "Эхо В Пещере",
     template: `
-Deep [[0]] the hills, we found a [[5]]. I had to [[2]] at a weak light, then [[10]] at the wall and [[11]] the old drawings.
+Deep [[0]] the hills, we found a [[5]]. I had to [[2|squint]] at a weak light, then [[10|glance]] at the wall and watch the old drawings [[11|fade]].
 
-One child started [[6]], another tried [[7]] the lamp, and everyone stood [[8]]. I told them not to play [[1]] here, not [[3]] the walk, and to [[4]] the quiet air. In the end I used both hands [[9]] cold water from the stone.
+One child started to [[6|wail]], another tried to [[7|hold out]] the lamp, and everyone stood [[8]]. I told them not to play [[1]] here, not to [[3|suspend]] the walk, and to [[4|savor]] the quiet air. In the end, I used both hands to [[9|cup]] cold water from the stone.
 `
   },
   "25": {
@@ -237,31 +237,31 @@ One child started [[6]], another tried [[7]] the lamp, and everyone stood [[8]].
     template: `
 We were [[11]] when the [[2]] came. A bright [[3]] crossed the sky, and a white [[4]] moved down the hill. Cold [[0]] covered the road, and everyone felt [[1]].
 
-A [[5]] still tried to work before [[6]], keeping a [[7]] of tea nearby. It was a [[8]] effort in the middle of the wild night. Even the trees looked [[9]] [[10]] the storm.
+A [[5]] still tried to work before [[6]], keeping a [[7]] of tea nearby. It was a [[8]] effort [[10]] the wild night. Even the trees looked [[9]] in the storm.
 `
   },
   "26": {
     title: "Темная Поездка",
     template: `
-There was a strange [[0]] on the road when my [[7]] said, "[[3]]." We wanted [[1]] food from the closed shop, not [[2]] it.
+There was a strange [[0]] on the road when my [[7]] said, "[[2]]." We did not want to [[1|plunder]] the closed shop; we only wanted to [[3|swallow]] some hot food.
 
-Still, the town felt [[4]], and the [[5]] behind the houses seemed endless. I chose [[6]] the cold soup while one light began [[8]]. A leaf moved as if someone wanted [[9]] my shoulder, then another branch tried [[10]] my hand, and our fear vanished [[11]].
+Still, the town felt [[4]], and the [[5]] behind the houses seemed endless. I chose to leave [[6]] while one light began to [[8|shine]]. A leaf moved as if someone wanted to [[9|pat]] my shoulder, then another branch tried to [[10|prick]] my hand, and our old [[11]] fear vanished.
 `
   },
   "27": {
     title: "Странный Рисунок",
     template: `
-One silly [[8]] at school began when somebody drew an [[3]] and a group of [[4]] on the [[0]]. The picture had too many [[5]], a big [[1]], and even an [[2]] in the corner.
+One silly [[8]] at school began when somebody drew an [[3]] and a group of [[4]] on the [[0]]. The picture had too many [[5]], a big [[1]], and even an [[2]] in the corner. A [[6]] from the yard was lying beside the paint.
 
-A teacher said the joke might [[10]] people, and one pupil already felt [[9]]. She called the drawing a [[6]] of bad humor, asked us [[7]], because some children were [[11|scared of]] it, and sent us back to work.
+A teacher said the joke might [[10|offend]] people, and one pupil already felt [[9]]. She told us to [[7|flush the toilet]] after art class, because some children were [[11|scared of]] it, and sent us back to work.
 `
   },
   "28": {
     title: "Просто Попросить Помощи",
     template: `
-The child wanted [[0]] in the mirror, but he also had to [[1]] his fear. First he tried [[2]] the toy from under the bed.
+The child wanted to [[0|see his face]] in the mirror, but he also had to [[1|let it out]] and stop hiding his fear. First he had to [[2|pull it out]]: the small toy was stuck under the bed.
 
-In the end he chose [[3]], and his mother came [[5|to release]] the stuck box. They laughed [[4]], and the room felt safe again.
+In the end, he chose to [[3|ask for help]], and his mother came [[4]] to [[5|release]] the stuck box. They laughed, and the room felt safe again.
 `
   }
 };
