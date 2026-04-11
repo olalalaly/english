@@ -263,6 +263,78 @@ The child wanted to [[0|see his face]] in the mirror, but he also had to [[1|let
 
 In the end, he chose to [[3|ask for help]], and his mother came [[4]] to [[5|release]] the stuck box. They laughed, and the room felt safe again.
 `
+  },
+  "29": {
+    title: "Звездная Книга",
+    template: `
+In our old star book, [[0]], [[1]], and [[2]] stood at the top of the spring page. Under them were [[3]], [[4]], and [[5]], each with a short note about love and work.
+
+On the next page, [[6]], [[7]], and [[8]] appeared beside a mountain drawing. At the end came [[9]], [[10]], and [[11]], so the whole circle of signs felt complete.
+`
+  },
+  "30": {
+    title: "Карта И Урок",
+    template: `
+The map in the [[7]] showed every [[0]] beside the [[1]], [[2]], [[3]], [[4]], and [[5]]. A [[6]] to the lesson drew one long, [[10]] line across the page.
+
+In art class, we had to [[9|elongate]] the blue shape of the sea with paste made from [[11]]. The teacher laughed and asked whether the clay fish was [[8]], but no one wanted to eat it.
+`
+  },
+  "31": {
+    title: "Берег И Канава",
+    template: `
+By the [[5]], we saw a [[2]] beyond a deep [[9]]. A dark line seemed to [[3|curve]] toward the water, and a small [[7]] ran through the dry ground.
+
+Soon rain began to [[8|fill up]] the trench. I was [[11|tryna]] stay calm while we [[6|sifted]] sand for a lost ring. Someone wanted to [[4|execute]] the whole plan at once, but I told him to [[10|get loose]] and eat the [[1]] fruit; only the [[0]] was bitter.
+`
+  },
+  "32": {
+    title: "Шумный Клуб",
+    template: `
+The club looked [[0]] when the lights began to [[1|pop]] and dancers began to [[2|pop out]] on stage. One friend wanted to go [[3]] and kept saying, "[[4]]."
+
+A [[9]] kept laughing while her cousin, a [[10]], opened a bottle of [[11]]. Another guy wanted to [[7|hit the strip club]], then started to [[5|spazz out]] and even talked about [[6|putting it in raw]], but our DJ, nicknamed [[8|Lil']], took him outside.
+`
+  },
+  "33": {
+    title: "Старый Дом",
+    template: `
+On a [[11]] evening, a [[5]] stove stood by the [[10]]. A black cat liked to [[1|lurk]] there while I looked [[2|through the peephole]] at the door.
+
+When the hot room gave me [[0]], I tried not to [[4|waver]]. Instead, I used a [[9]] to heat water, began to [[7|sweep up]] the floor, and had time to [[8|mend]] a chair made of [[6]] wood before my brother [[3|hit]] the window with a stick.
+`
+  },
+  "34": {
+    title: "Ночной Дом",
+    template: `
+The moon hung [[0]] the hills, and we walked [[1]] down a narrow [[9]] toward an [[6]] house. A [[8]] moved in the wind, and a [[2]] guard stood at the [[11]].
+
+His [[3]] ached from [[4]], and long [[5]] had made him [[10]] in speech. Still, he smiled and said the house [[7]] room for one more traveler.
+`
+  },
+  "35": {
+    title: "Подготовка К Буре",
+    template: `
+A [[3]] voice on the radio told us [[10|about]] a storm and then switched to a [[11]] song. Dad checked the [[6]], told me to [[8|pack]] fast, and began to [[0|stack]] water in the hall.
+
+My sister still wanted [[9|to throw a party]] and spend a [[1]] on snacks, because she said the night would be [[5]]. Mom said, "[[7]], we're staying home," and told us to [[4|fall back]] from the windows and [[2|give it our all]] while we worked.
+`
+  },
+  "36": {
+    title: "Дождь У Моста",
+    template: `
+A [[0]] puppy followed us along a [[7]] near the mill. The sky was [[1]] with rain, and the rising water felt like real [[2]], but our [[3]] guide kept walking.
+
+He said that [[4]] and [[5]] sometimes mean stepping forward, so he tried to [[6|seize]] the broken rope before it could [[8|burst]]. I began to [[9|trip]] on the rocks, yet he still found [[11]] wild mint to [[10|honour]] the place with a small meal.
+`
+  },
+  "37": {
+    title: "Банка Огурцов",
+    template: `
+Grandma used a [[2]] cucumbers, though she always joked that a [[3]] would be better.
+
+She taught me [[0|to pickle]] them in salt water, watched the small jar [[1|wag]] in my hands, and laughed when the herbs began [[4|to cluster]] at the bottom.
+`
   }
 };
 
