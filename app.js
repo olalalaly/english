@@ -335,6 +335,86 @@ Grandma used a [[2]] cucumbers, though she always joked that a [[3]] would be be
 
 She taught me [[0|to pickle]] them in salt water, watched the small jar [[1|wag]] in my hands, and laughed when the herbs began [[4|to cluster]] at the bottom.
 `
+  },
+  "38": {
+    title: "Реки И Луг",
+    template: `
+In the [[9]], a [[6]] ran between a [[10]] of hay near the [[2]] and the [[3]]. The air felt [[1]], and the view was [[4]], almost like a postcard from the [[5]].
+
+A [[8]] began to [[11|kick up]] dust and [[7|chuck]] stones, but his mother told him [[0|to attend]] school instead.
+`
+  },
+  "39": {
+    title: "Школьная Статья",
+    template: `
+A [[0]] wrote a [[7]] for the school paper about a missing [[4|jumbo jet]]. The tired [[2]] tried [[5|to establish]] the facts, but there was no [[6]] proof.
+
+Some students [[3|despised]] the rumor that [[8]] was involved. The most [[9]] boy laughed at one [[10]] joke, yet the article still described deep [[11]]. No one wanted [[1|to quit]] the story.
+`
+  },
+  "40": {
+    title: "Книга Вместо Автомата",
+    template: `
+On a cold street, a broken [[3]] stood outside the library. A poster made with [[6]] asked people to fight [[8]] with books and remember that [[9]] matters.
+
+A volunteer speaking [[2]] the town tried [[1|to persuade]] the mayor [[5|to endorse]] the plan. He said free books [[7|constitute]] a start, children [[0]] read more, and even stories about the [[4]] could [[10|entertain]] a young [[11]].
+`
+  },
+  "41": {
+    title: "Семейный Вечер",
+    template: `
+My [[1]] told me not [[0|to stay up]] too late. I stood in the [[8]], listened to rain [[10|slam]] against the wall, and watched smoke [[9|puff]] from the stove.
+
+A rude [[6]] at the window had no [[5]]. I put the insult [[2]], answered [[3]], and tried [[4|to extend]] a hand instead. Then my little cousin began [[7|to shimmy]] across the floor, and Grandma had to [[11|summon]] everyone to dinner.
+`
+  },
+  "42": {
+    title: "Номер В Отеле",
+    template: `
+The [[0]] of the hotel tried [[1|to convince]] us that the small [[8]] was [[10]]. [[2]], he knew the room was too noisy after a late [[11]] in the hall.
+
+A [[7]] guest with a heavy [[9]] and too little money argued that the price was [[6]]. Our most [[5]] clerk refused [[4|to bribe]] anyone and promised [[3|to nail]] the billing mistake.
+`
+  },
+  "43": {
+    title: "Галерея И Двор",
+    template: `
+In the gallery, a [[4]] painter gave one strange [[7]] of [[8]]. A [[3]] critic said the idea went [[6]] simple art.
+
+Outside, leaves began to move as bikes [[5|whizzed]] by and a truck came [[9|in hot]]. A worker used a [[0]] to fix the flower [[2]] and warned the child not [[1|to impale]] his hand on the fence. He joked that harsh rulers can [[11|enslave]] people and war can [[10|massacre]] them.
+`
+  },
+  "44": {
+    title: "Собрание Под Дождем",
+    template: `
+At the union [[2]], a [[1]] speaker lifted a [[0]] and a [[3]]. He talked about wages, [[4]], and the need [[9|to testify]] honestly.
+
+When rain began [[5|to pour]], guards tried [[6|to bundle out]] the crowd. One man chose [[8|to turn down]] a bribe and [[7|to denounce]] a [[11]], even while his child tried [[10|to tickle]] him.
+`
+  },
+  "45": {
+    title: "Редактор И Зоопарк",
+    template: `
+At the zoo, handlers watched birds [[5|copulate]] and then [[6|groom]] each other. The guide said the small flock [[2|comprised]] the [[7]] of the park's rare species.
+
+Elsewhere, a bad ad had tried [[3|to dupe]] visitors, so the editor used red ink [[0|to slash]] the text, [[4|to emphasize]] the facts, and [[11|tear up]] the old poster. We should not [[10|assume]] people are fools, nor [[1|bemoan]] the problem without proof; few gave it [[8]] until the evidence was [[9]] clear.
+`
+  },
+  "46": {
+    title: "Лесной Скандал",
+    template: `
+A [[4]] warned us about a [[5]] in the forest. One trapped deer was [[1]], so it could not [[0|defend itself]].
+
+The paper soon mixed the case with an [[9]] about a [[11]] and used [[8]] for attention. That felt [[6]], [[10]], and unfair. Good people should not [[2|disenfranchise]] others, [[3|abandon]] truth, or [[7|spill the beans]] just for gossip.
+`
+  },
+  "47": {
+    title: "Статья В Газете",
+    template: `
+An [[0]] reached the paper, and a [[1]] followed a day later. The editor wrote a [[2]] note under the [[3]] and used one [[4]] chart to explain the case.
+
+I had only time [[6|to skim]] the pages before dust began [[7|to clog]] the printer. Good editors never [[8|condone]] lies; they try [[10|to offset]] panic and keep the [[9]] of the story. The rush still managed [[5|to thrill]] me.
+`
   }
 };
 
