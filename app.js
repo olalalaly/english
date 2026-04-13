@@ -36,6 +36,56 @@ const MODES = {
   }
 };
 
+const GROUP_THEMES = {
+  "1": "Еда И Ферма",
+  "2": "Разговор И Конфликт",
+  "3": "Грязь И Характер",
+  "4": "Музей И Работа",
+  "5": "Озеро И Поездка",
+  "6": "Школа И Удача",
+  "7": "Семья И Еда",
+  "8": "Дисциплина И География",
+  "9": "Планеты И Дом",
+  "10": "Характер И Уют",
+  "11": "Учеба И Команда",
+  "12": "Карта Неба",
+  "13": "Клуб И Инструменты",
+  "14": "Игры И Общение",
+  "15": "Птицы И Дом",
+  "16": "Опасности И Путь",
+  "17": "Племя И Ритуал",
+  "18": "Снег И Память",
+  "19": "Тропа И Спокойствие",
+  "20": "Мозг И Добавки",
+  "21": "Живот И Здоровье",
+  "22": "Кухня И Быт",
+  "23": "Лаборатория И Материалы",
+  "24": "Пещера И Чувства",
+  "25": "Ночь И Буря",
+  "26": "Темнота И Дорога",
+  "27": "Школа И Насмешка",
+  "28": "Просьба О Помощи",
+  "29": "Знаки Зодиака",
+  "30": "Океаны И Карта",
+  "31": "Берег И Земля",
+  "32": "Сленг И Клуб",
+  "33": "Дом И Жара",
+  "34": "Старый Дом И Ночь",
+  "35": "Шторм И Подготовка",
+  "36": "Долг И Опасность",
+  "37": "Соленья И Счет",
+  "38": "Реки И Природа",
+  "39": "Учеба И Новости",
+  "40": "Общество И Бедность",
+  "41": "Дом И Манеры",
+  "42": "Отель И Ссора",
+  "43": "Двор И Власть",
+  "44": "Работа И Показания",
+  "45": "Обман И Акценты",
+  "46": "Лес И Унижение",
+  "47": "Суд И Редакция"
+};
+
 const READING_BLUEPRINTS = [
   {
     title: "Ужин И Ферма",
@@ -633,7 +683,7 @@ function populateGroupSelect() {
     { value: "all", label: `Все группы · ${preparedWords.length} слов` },
     ...wordGroups.map((group) => ({
       value: group.id,
-      label: `${group.label} · ${group.words.length} слов`
+      label: `${group.label} · ${group.theme} · ${group.words.length} слов`
     }))
   ];
 
@@ -740,7 +790,7 @@ function updateProgress() {
   els.progressChip.textContent = `${state.index + 1} / ${total}`;
   els.groupChip.textContent = state.selectedGroup === "all"
     ? `Все группы · ${selectedWords.length} слов`
-    : `${currentGroup.label} · ${selectedWords.length} слов`;
+    : `${currentGroup.label} · ${currentGroup.theme} · ${selectedWords.length} слов`;
 }
 
 function renderCardsMode(entry) {
@@ -1091,7 +1141,7 @@ function buildReadingTexts(groups, blueprints) {
     return {
       id: group.id,
       groupLabel: group.label,
-      title: blueprint.title,
+      title: group.theme,
       wordCount: group.words.length,
       paragraphs: compileReadingTemplate(blueprint.template, group.words)
     };
@@ -1130,7 +1180,7 @@ function makeFallbackReadingBlueprint(group) {
   }
 
   return {
-    title: `Текст Для ${group.label}`,
+    title: group.theme,
     template: chunks
       .map((chunk, index) => {
         const intro = index === 0
@@ -1255,11 +1305,13 @@ function buildGroups(words) {
 
   words.forEach((word) => {
     const id = String(word.groupNumber);
+    const theme = GROUP_THEMES[id] || `Тема ${id}`;
 
     if (!grouped.has(id)) {
       grouped.set(id, {
         id,
         label: `Группа ${id}`,
+        theme,
         words: []
       });
     }
