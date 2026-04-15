@@ -36,437 +36,36 @@ const MODES = {
   }
 };
 
-const GROUP_THEMES = {
-  "1": "Еда И Ферма",
-  "2": "Разговор И Конфликт",
-  "3": "Грязь И Характер",
-  "4": "Музей И Работа",
-  "5": "Озеро И Поездка",
-  "6": "Школа И Удача",
-  "7": "Семья И Еда",
-  "8": "Дисциплина И География",
-  "9": "Планеты И Дом",
-  "10": "Характер И Уют",
-  "11": "Учеба И Команда",
-  "12": "Карта Неба",
-  "13": "Клуб И Инструменты",
-  "14": "Игры И Общение",
-  "15": "Птицы И Дом",
-  "16": "Опасности И Путь",
-  "17": "Племя И Ритуал",
-  "18": "Снег И Память",
-  "19": "Тропа И Спокойствие",
-  "20": "Мозг И Добавки",
-  "21": "Живот И Здоровье",
-  "22": "Кухня И Быт",
-  "23": "Лаборатория И Материалы",
-  "24": "Пещера И Чувства",
-  "25": "Ночь И Буря",
-  "26": "Темнота И Дорога",
-  "27": "Школа И Насмешка",
-  "28": "Просьба О Помощи",
-  "29": "Знаки Зодиака",
-  "30": "Океаны И Карта",
-  "31": "Берег И Земля",
-  "32": "Сленг И Клуб",
-  "33": "Дом И Жара",
-  "34": "Старый Дом И Ночь",
-  "35": "Шторм И Подготовка",
-  "36": "Долг И Опасность",
-  "37": "Соленья И Счет",
-  "38": "Реки И Природа",
-  "39": "Учеба И Новости",
-  "40": "Общество И Бедность",
-  "41": "Дом И Манеры",
-  "42": "Отель И Ссора",
-  "43": "Двор И Власть",
-  "44": "Работа И Показания",
-  "45": "Обман И Акценты",
-  "46": "Лес И Унижение",
-  "47": "Суд И Редакция"
-};
-
-const READING_BLUEPRINTS = [
-  {
-    title: "Ужин И Ферма",
-    template: `
-The [[0]] was strong when I saw an [[1]] bowl of [[3]] near a hot [[4]]. The dish looked like a bright [[5]] of colors.
-
-On the farm, the old machine could [[2|mutilate]] a hand, so we stayed away from the [[6]]. One [[7]] animal could not run, but the [[8]] cook said the meal would [[9|cost]] a lot, the table would [[10|fit]] the whole family, and everyone would still [[11|get]] enough food.
-`
-  },
-  {
-    title: "Вечер На Диване",
-    template: `
-On [[1]] night, we sat on the [[3]] and watched a good [[1]]. The old [[2]] looked dusty, but the story was still clear.
-
-One rude man tried to [[0|hit on]] my friend, and she told him, "[[4]]." Another person shouted, "[[5]]," but we said, "[[6]]." It is hard to [[7|maintain]] peace in a room like that, yet I still [[8|admire]] my calm friend. I do not [[9|envy]] her, and our friendship has a long [[10]] because people like her [[11|contribute]] so much.
-`
-  },
-  {
-    title: "Плохая Кухня",
-    template: `
-The best [[0]] for a dirty kitchen is simple cleaning. During [[1]], a child learns why a [[4]] full of old soup and white [[3]] can smell [[5]].
-
-If someone [[6|casts]] trash on the floor, I get [[2]]. A rich man may [[7|possess]] great [[8]], but without real [[11]], he will not [[9|gather]] people around him and will still use [[10]] words.
-`
-  },
-  {
-    title: "Странный Музей",
-    template: `
-At the [[2]] stage of the museum job, I felt [[4]] because a worker had [[5]] through an old model and exposed dry [[6]] inside.
-
-The room [[8]] to our office was quiet, and I had to [[9|investigate]] papers for [[10]] while I [[11|stirred]] soup in a cup. One artist sent a small [[7]] instead of a real [[3]], and I felt [[1]] pride for him; [[0]], I kept the piece.
-`
-  },
-  {
-    title: "Дом У Озера",
-    template: `
-We went to the [[0]] in a [[1]] while a [[2]] moved far away. I wanted to [[3|catch]] a fish, but then I heard a [[4]] near the reeds.
-
-The [[5]] group stopped, and one boy tried to [[6|punch]] the side of the boat in fear. We told him to [[7|get rid of]] the heavy [[8]] box and to [[9|pay a visit to]] the old man who lived by the [[11]]. Near his door, a [[10]] grew alone.
-`
-  },
-  {
-    title: "Тест У Сосны",
-    template: `
-After rain, a [[0]] lay under the [[10]] tree. My [[11]] laughed at a [[1]] hole in the road, but a [[2]] only sees the surface.
-
-At school, one rude [[3]] missed the [[4]] in the game. The kind [[7]] beside me said, "[[5]]," when I sneezed and, "[[6]]," before my test. I ate [[8]] with [[9]] in the morning.
-`
-  },
-  {
-    title: "Семейный Десерт",
-    template: `
-My [[0]] and [[1]] came for lunch. We ate [[2]] on bread and a hot [[7]] with [[5]].
-
-Later we made a cake with sweet [[4]], cold [[6]], and bright [[9]]. A child hit his [[3]] on a [[8]] near the [[10]], so I had to [[11|pound]] ice into small pieces.
-`
-  },
-  {
-    title: "Урок Географии",
-    template: `
-Our teacher did not [[0|persecute]] us; her [[1]] simply meant that we had to stay [[4]] and do the work. She told us not to [[2|shun]] the quiet boy and asked me to [[3|snip]] a map from paper.
-
-First we drew a [[6]] of stars, then a line from the [[8]] to the [[9]], with the [[10]] in the middle. A black [[11]] sat on the window while we talked about the [[7]] of a train [[5]] outside.
-`
-  },
-  {
-    title: "Космос И Булка",
-    template: `
-In my [[11]], I keep a space book in the [[9]] beside a fresh [[8]]. It shows [[1]], [[2]], [[0]], and [[3]] under the same [[4]].
-
-The pages explain the [[5]] and the [[6]] in simple words. One small [[7]] in the book made me smile: after all that science, the writer told the reader not to [[10|loaf]] but to keep learning.
-`
-  },
-  {
-    title: "Теплая Комната",
-    template: `
-Our small room felt [[3]] because a [[4]] with a [[5]] sat by the fire. Her [[6]] face became [[2]] when a wet [[0]] ran in.
-
-It was a [[1]], dirty and tired, and its fur looked [[7]] under the light. Still, cleaning it was [[8]], because it began to [[9|give off]] a soft smell of soap. I gave the bowl a [[10]], but the floor stayed [[11]].
-`
-  },
-  {
-    title: "Шумная Команда",
-    template: `
-During my [[10]], a problem began to [[3|occur]] in our team [[11]]. One loud [[7]] tried to [[2|retard]] every task and did not stop [[5|bothering]] people.
-
-We made a [[6]] and, [[9]], everyone wanted less noise and more light. Too much [[8]] of private data would be a [[4]], because it could hurt our [[0]] peace. A calm leader with [[1]] patience fixed it.
-`
-  },
-  {
-    title: "Карта И Небо",
-    template: `
-A [[0]] stood on the [[1]] while we studied a world map. We marked the [[2]], [[3]], [[4]], and [[5]] with blue lines.
-
-Later at night we looked for [[6]], [[7]], [[8]], and [[9]] in a book. My little brother wore paper [[10]] and said he felt [[11]].
-`
-  },
-  {
-    title: "Старый Клуб",
-    template: `
-At the old [[1]], the [[10]] took a [[0]] of tea and looked at a broken door. Someone had used a [[2]] and a [[6]] to open it, and the lock began to [[7|snap]].
-
-Inside we found [[8]] trash, bad food, and one [[5]] asleep on a [[9]] chair. His [[4]] note on the wall made everyone quiet. The [[3]] of the mess would be hard, and the rain made conditions more [[11]].
-`
-  },
-  {
-    title: "Летний Двор",
-    template: `
-The children kept [[2]] in the yard, and one boy loved to [[3|skylark]] until dinner. Their [[4]] felt endless, almost like [[0]], but the old teacher said it came from the [[5]] of summer joy.
-
-Over a warm [[10]], she helped us [[11|acquaint]] the new girl with the group. Soon even the [[8]] on the fence seemed [[7]] to listen. No one wanted the ugly [[6]], and no one tried to [[9|beat]] anyone in the game. That was much less [[1]] than before.
-`
-  },
-  {
-    title: "Птицы До Ком. Часа",
-    template: `
-Before [[0]], the [[7]] and the [[8]] flew back to a [[9]] above our door. Their home looked [[1]], and on cold nights they seemed to [[3|snuggle]] together.
-
-One child asked if he could [[2|hop in]] the truck, but he waited for my [[4]]. Inside, a broken [[6]] made a [[11]] sound, yet the small birds still seemed to [[5|thrive]] on a soft [[10]] of leaves.
-`
-  },
-  {
-    title: "Работа В Долине",
-    template: `
-During our [[4]] in the mountain [[9]], rain became a real [[0]]. The path was [[6]], so I told my friend not to [[1|nag]] the tired horse and to check its [[2]].
-
-We had to [[8|lug]] boxes down the hill while a small [[7]] opened on a bush. A sudden [[5]] came when a [[10]] group passed nearby, but our simple [[11]] plan helped us stay calm. [[3]], we had practiced it.
-`
-  },
-  {
-    title: "Лагерь У Ягод",
-    template: `
-The road was full of [[0]], and a [[1]] dog watched our camp with clear [[2]]. [[3]], the morning felt tense.
-
-Still, it was [[5]] for our [[7]] to [[6|kneel]] before a meal. One loud [[8]] refused, and the chief began to [[9|condemn]] him, but an old bell seemed to [[10|herald]] peace instead. We chose a sweet [[11]] from the bush and moved on.
-`
-  },
-  {
-    title: "Снег И Память",
-    template: `
-A [[0]] began, yet my grandfather spoke about an [[1]] who loved winter walks. [[2]] the snow, he would [[3|strike]] a drum and send a [[4]] into the gray sky.
-
-A [[5]] and a [[6]] often stood near the river. After his death, the family felt deep [[7]] and had to [[8|grieve]], but we did not [[9|get lost]] in the storm. We learned that [[10]] is not [[11]]; real happiness needs care and movement.
-`
-  },
-  {
-    title: "Тихая Тропа",
-    template: `
-On a quiet [[2]] path, I felt [[0]] and began to [[1|reminisce]] about old trips. It was easy to fall into a daily [[3]], but the clean air helped me [[4|unthink]] that habit.
-
-The lake looked [[5]], the small house of [[6]] smelled sweet, and far away someone played a [[7]].
-`
-  }
+const FREQUENCY_THEME_STEPS = [
+  { limit: 0.12, label: "Самые частые слова" },
+  { limit: 0.24, label: "Очень частые слова" },
+  { limit: 0.38, label: "Частые слова" },
+  { limit: 0.5, label: "База для чтения" },
+  { limit: 0.64, label: "Средняя частотность" },
+  { limit: 0.76, label: "Чуть реже" },
+  { limit: 0.88, label: "Редкие слова" },
+  { limit: 1, label: "Очень редкие слова" }
 ];
 
-const EXTRA_READING_BLUEPRINTS = {
-  "20": {
-    title: "Совет Врача",
-    template: `
-The doctor gave me a [[0]] with [[1]], and I had to [[4|consider]] my food very carefully. A small [[2]] can turn into [[5]], and soon a person may feel [[6]].
+const READING_SENTENCE_FRAMES = [
+  { start: "The first words in this set are", end: "." },
+  { start: "Then I read", end: " aloud and match them with the meaning." },
+  { start: "After that, I write", end: " from memory." },
+  { start: "At the end, I review", end: " once more." }
+];
 
-One [[3]] may help for a moment, but the effect can be too [[7]]. In the brain, [[8]] is delicate, and some medicine has an [[9]] effect that may even [[10|enhance]] recovery. I took one [[11]] of water and went home.
-`
-  },
-  "21": {
-    title: "Живот И Кухня",
-    template: `
-My [[0]] and my [[1]] felt better when I stopped trying to [[2|overlook]] simple signs. The doctor saw a [[3]] [[4]] in one [[5]] problem and said she could [[6|alleviate]] the pain.
-
-It sounded [[7]], but the [[8]] of recovery were real. A [[9]] smell came from the old soup, so I had to [[10|fetch]] clean water in a [[11]] and rest.
-`
-  },
-  "22": {
-    title: "Тихая Кухня",
-    template: `
-The child sat on a [[1]] with [[2]] and tried not to [[0|tumble]]. One loud sound was enough to [[3|frighten]] her.
-
-In the kitchen, we had to [[4|alter]] the plan because a broken pipe could [[5|disrupt]] the room. We used the pump to [[6|pump out]] the water, did it [[7]], and kept a [[8]] rhythm. Every [[9]] in the room changed on the [[10]], and that [[11]] made the problem easy to notice.
-`
-  },
-  "23": {
-    title: "Шум В Лаборатории",
-    template: `
-During the [[1]], our team kept a [[0]] mood even when papers flew [[2]]. Small children began [[3|clustering up]], while one voice kept [[4|wavering]] between fear and hope.
-
-A band of [[5]] held the notes together, but [[6]] from the fire stained the page, and black [[7]] spread over the map. I had to [[8|lay out]] the tools, breathe a [[9]], hear the chair [[10|squeak]], and stay [[11]].
-`
-  },
-  "24": {
-    title: "Эхо В Пещере",
-    template: `
-Deep [[0]] the hills, we found a [[5]]. I had to [[2|squint]] at a weak light, then [[10|glance]] at the wall and watch the old drawings [[11|fade]].
-
-One child started to [[6|wail]], another tried to [[7|hold out]] the lamp, and everyone stood [[8]]. I told them not to play [[1]] here, not to [[3|suspend]] the walk, and to [[4|savor]] the quiet air. In the end, I used both hands to [[9|cup]] cold water from the stone.
-`
-  },
-  "25": {
-    title: "Ночь На Дороге",
-    template: `
-We were [[11]] when the [[2]] came. A bright [[3]] crossed the sky, and a white [[4]] moved down the hill. Cold [[0]] covered the road, and everyone felt [[1]].
-
-A [[5]] still tried to work before [[6]], keeping a [[7]] of tea nearby. It was a [[8]] effort [[10]] the wild night. Even the trees looked [[9]] in the storm.
-`
-  },
-  "26": {
-    title: "Темная Поездка",
-    template: `
-There was a strange [[0]] on the road when my [[7]] said, "[[2]]." We did not want to [[1|plunder]] the closed shop; we only wanted to [[3|swallow]] some hot food.
-
-Still, the town felt [[4]], and the [[5]] behind the houses seemed endless. I chose to leave [[6]] while one light began to [[8|shine]]. A leaf moved as if someone wanted to [[9|pat]] my shoulder, then another branch tried to [[10|prick]] my hand, and our old [[11]] fear vanished.
-`
-  },
-  "27": {
-    title: "Странный Рисунок",
-    template: `
-One silly [[8]] at school began when somebody drew an [[3]] and a group of [[4]] on the [[0]]. The picture had too many [[5]], a big [[1]], and even an [[2]] in the corner. A [[6]] from the yard was lying beside the paint.
-
-A teacher said the joke might [[10|offend]] people, and one pupil already felt [[9]]. She told us to [[7|flush the toilet]] after art class, because some children were [[11|scared of]] it, and sent us back to work.
-`
-  },
-  "28": {
-    title: "Просто Попросить Помощи",
-    template: `
-The child wanted to [[0|see his face]] in the mirror, but he also had to [[1|let it out]] and stop hiding his fear. First he had to [[2|pull it out]]: the small toy was stuck under the bed.
-
-In the end, he chose to [[3|ask for help]], and his mother came [[4]] to [[5|release]] the stuck box. They laughed, and the room felt safe again.
-`
-  },
-  "29": {
-    title: "Звездная Книга",
-    template: `
-In our old star book, [[0]], [[1]], and [[2]] stood at the top of the spring page. Under them were [[3]], [[4]], and [[5]], each with a short note about love and work.
-
-On the next page, [[6]], [[7]], and [[8]] appeared beside a mountain drawing. At the end came [[9]], [[10]], and [[11]], so the whole circle of signs felt complete.
-`
-  },
-  "30": {
-    title: "Карта И Урок",
-    template: `
-The map in the [[7]] showed every [[0]] beside the [[1]], [[2]], [[3]], [[4]], and [[5]]. A [[6]] to the lesson drew one long, [[10]] line across the page.
-
-In art class, we had to [[9|elongate]] the blue shape of the sea with paste made from [[11]]. The teacher laughed and asked whether the clay fish was [[8]], but no one wanted to eat it.
-`
-  },
-  "31": {
-    title: "Берег И Канава",
-    template: `
-By the [[5]], we saw a [[2]] beyond a deep [[9]]. A dark line seemed to [[3|curve]] toward the water, and a small [[7]] ran through the dry ground.
-
-Soon rain began to [[8|fill up]] the trench. I was [[11|tryna]] stay calm while we [[6|sifted]] sand for a lost ring. Someone wanted to [[4|execute]] the whole plan at once, but I told him to [[10|get loose]] and eat the [[1]] fruit; only the [[0]] was bitter.
-`
-  },
-  "32": {
-    title: "Шумный Клуб",
-    template: `
-The club looked [[0]] when the lights began to [[1|pop]] and dancers began to [[2|pop out]] on stage. One friend wanted to go [[3]] and kept saying, "[[4]]."
-
-A [[9]] kept laughing while her cousin, a [[10]], opened a bottle of [[11]]. Another guy wanted to [[7|hit the strip club]], then started to [[5|spazz out]] and even talked about [[6|putting it in raw]], but our DJ, nicknamed [[8|Lil']], took him outside.
-`
-  },
-  "33": {
-    title: "Старый Дом",
-    template: `
-On a [[11]] evening, a [[5]] stove stood by the [[10]]. A black cat liked to [[1|lurk]] there while I looked [[2|through the peephole]] at the door.
-
-When the hot room gave me [[0]], I tried not to [[4|waver]]. Instead, I used a [[9]] to heat water, began to [[7|sweep up]] the floor, and had time to [[8|mend]] a chair made of [[6]] wood before my brother [[3|hit]] the window with a stick.
-`
-  },
-  "34": {
-    title: "Ночной Дом",
-    template: `
-The moon hung [[0]] the hills, and we walked [[1]] down a narrow [[9]] toward an [[6]] house. A [[8]] moved in the wind, and a [[2]] guard stood at the [[11]].
-
-His [[3]] ached from [[4]], and long [[5]] had made him [[10]] in speech. Still, he smiled and said the house [[7]] room for one more traveler.
-`
-  },
-  "35": {
-    title: "Подготовка К Буре",
-    template: `
-A [[3]] voice on the radio told us [[10|about]] a storm and then switched to a [[11]] song. Dad checked the [[6]], told me to [[8|pack]] fast, and began to [[0|stack]] water in the hall.
-
-My sister still wanted [[9|to throw a party]] and spend a [[1]] on snacks, because she said the night would be [[5]]. Mom said, "[[7]], we're staying home," and told us to [[4|fall back]] from the windows and [[2|give it our all]] while we worked.
-`
-  },
-  "36": {
-    title: "Дождь У Моста",
-    template: `
-A [[0]] puppy followed us along a [[7]] near the mill. The sky was [[1]] with rain, and the rising water felt like real [[2]], but our [[3]] guide kept walking.
-
-He said that [[4]] and [[5]] sometimes mean stepping forward, so he tried to [[6|seize]] the broken rope before it could [[8|burst]]. I began to [[9|trip]] on the rocks, yet he still found [[11]] wild mint to [[10|honour]] the place with a small meal.
-`
-  },
-  "37": {
-    title: "Банка Огурцов",
-    template: `
-Grandma used a [[2]] cucumbers, though she always joked that a [[3]] would be better.
-
-She taught me [[0|to pickle]] them in salt water, watched the small jar [[1|wag]] in my hands, and laughed when the herbs began [[4|to cluster]] at the bottom.
-`
-  },
-  "38": {
-    title: "Реки И Луг",
-    template: `
-In the [[9]], a [[6]] ran between a [[10]] of hay near the [[2]] and the [[3]]. The air felt [[1]], and the view was [[4]], almost like a postcard from the [[5]].
-
-A [[8]] began to [[11|kick up]] dust and [[7|chuck]] stones, but his mother told him [[0|to attend]] school instead.
-`
-  },
-  "39": {
-    title: "Школьная Статья",
-    template: `
-A [[0]] wrote a [[7]] for the school paper about a missing [[4|jumbo jet]]. The tired [[2]] tried [[5|to establish]] the facts, but there was no [[6]] proof.
-
-Some students [[3|despised]] the rumor that [[8]] was involved. The most [[9]] boy laughed at one [[10]] joke, yet the article still described deep [[11]]. No one wanted [[1|to quit]] the story.
-`
-  },
-  "40": {
-    title: "Книга Вместо Автомата",
-    template: `
-On a cold street, a broken [[3]] stood outside the library. A poster made with [[6]] asked people to fight [[8]] with books and remember that [[9]] matters.
-
-A volunteer speaking [[2]] the town tried [[1|to persuade]] the mayor [[5|to endorse]] the plan. He said free books [[7|constitute]] a start, children [[0]] read more, and even stories about the [[4]] could [[10|entertain]] a young [[11]].
-`
-  },
-  "41": {
-    title: "Семейный Вечер",
-    template: `
-My [[1]] told me not [[0|to stay up]] too late. I stood in the [[8]], listened to rain [[10|slam]] against the wall, and watched smoke [[9|puff]] from the stove.
-
-A rude [[6]] at the window had no [[5]]. I put the insult [[2]], answered [[3]], and tried [[4|to extend]] a hand instead. Then my little cousin began [[7|to shimmy]] across the floor, and Grandma had to [[11|summon]] everyone to dinner.
-`
-  },
-  "42": {
-    title: "Номер В Отеле",
-    template: `
-The [[0]] of the hotel tried [[1|to convince]] us that the small [[8]] was [[10]]. [[2]], he knew the room was too noisy after a late [[11]] in the hall.
-
-A [[7]] guest with a heavy [[9]] and too little money argued that the price was [[6]]. Our most [[5]] clerk refused [[4|to bribe]] anyone and promised [[3|to nail]] the billing mistake.
-`
-  },
-  "43": {
-    title: "Галерея И Двор",
-    template: `
-In the gallery, a [[4]] painter gave one strange [[7]] of [[8]]. A [[3]] critic said the idea went [[6]] simple art.
-
-Outside, leaves began to move as bikes [[5|whizzed]] by and a truck came [[9|in hot]]. A worker used a [[0]] to fix the flower [[2]] and warned the child not [[1|to impale]] his hand on the fence. He joked that harsh rulers can [[11|enslave]] people and war can [[10|massacre]] them.
-`
-  },
-  "44": {
-    title: "Собрание Под Дождем",
-    template: `
-At the union [[2]], a [[1]] speaker lifted a [[0]] and a [[3]]. He talked about wages, [[4]], and the need [[9|to testify]] honestly.
-
-When rain began [[5|to pour]], guards tried [[6|to bundle out]] the crowd. One man chose [[8|to turn down]] a bribe and [[7|to denounce]] a [[11]], even while his child tried [[10|to tickle]] him.
-`
-  },
-  "45": {
-    title: "Редактор И Зоопарк",
-    template: `
-At the zoo, handlers watched birds [[5|copulate]] and then [[6|groom]] each other. The guide said the small flock [[2|comprised]] the [[7]] of the park's rare species.
-
-Elsewhere, a bad ad had tried [[3|to dupe]] visitors, so the editor used red ink [[0|to slash]] the text, [[4|to emphasize]] the facts, and [[11|tear up]] the old poster. We should not [[10|assume]] people are fools, nor [[1|bemoan]] the problem without proof; few gave it [[8]] until the evidence was [[9]] clear.
-`
-  },
-  "46": {
-    title: "Лесной Скандал",
-    template: `
-A [[4]] warned us about a [[5]] in the forest. One trapped deer was [[1]], so it could not [[0|defend itself]].
-
-The paper soon mixed the case with an [[9]] about a [[11]] and used [[8]] for attention. That felt [[6]], [[10]], and unfair. Good people should not [[2|disenfranchise]] others, [[3|abandon]] truth, or [[7|spill the beans]] just for gossip.
-`
-  },
-  "47": {
-    title: "Статья В Газете",
-    template: `
-An [[0]] reached the paper, and a [[1]] followed a day later. The editor wrote a [[2]] note under the [[3]] and used one [[4]] chart to explain the case.
-
-I had only time [[6|to skim]] the pages before dust began [[7|to clog]] the printer. Good editors never [[8|condone]] lies; they try [[10|to offset]] panic and keep the [[9]] of the story. The rush still managed [[5|to thrill]] me.
-`
+function getFrequencyTheme(groupNumber, totalGroups) {
+  if (totalGroups <= 1) {
+    return FREQUENCY_THEME_STEPS[0].label;
   }
-};
+
+  const position = (groupNumber - 1) / (totalGroups - 1);
+
+  return (
+    FREQUENCY_THEME_STEPS.find((item) => position <= item.limit) ||
+    FREQUENCY_THEME_STEPS[FREQUENCY_THEME_STEPS.length - 1]
+  ).label;
+}
 
 const preparedWords = (window.WORDS || []).map((entry, index) => {
   const englishVariants = expandEnglishVariants([entry.english, ...(entry.acceptedAnswers || [])]);
@@ -488,7 +87,7 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
 });
 
 const wordGroups = buildGroups(preparedWords);
-const readingTexts = buildReadingTexts(wordGroups, READING_BLUEPRINTS);
+const readingTexts = buildReadingTexts(wordGroups);
 const persistent = loadProgress();
 
 const state = {
@@ -1128,40 +727,51 @@ function updateSummaryStats() {
   } else if (state.hardOnly && state.useAllWordsFallback) {
     els.supportNote.textContent = "В выбранной группе пока нет слов с рейтингом 0-2, поэтому показываются все слова этой группы.";
   } else if (state.selectedGroup === "all") {
-    els.supportNote.textContent = "Сейчас открыты все группы. Для быстрого заучивания лучше выбрать одну группу по 12 слов.";
+    els.supportNote.textContent = "Сейчас открыты все группы. Они идут от самых частых слов к более редким, поэтому удобнее начинать сверху.";
   } else {
     els.supportNote.textContent = "Рейтинг слова можно менять вручную от 0 до 5, а правильные и неправильные ответы обновляют его автоматически.";
   }
 }
 
-function buildReadingTexts(groups, blueprints) {
-  return groups.map((group, index) => {
-    const blueprint = blueprints[index] || EXTRA_READING_BLUEPRINTS[group.id] || makeFallbackReadingBlueprint(group);
+function buildReadingTexts(groups) {
+  return groups.map((group) => ({
+    id: group.id,
+    groupLabel: group.label,
+    title: group.theme,
+    wordCount: group.words.length,
+    paragraphs: createReadingParagraphs(group.words)
+  }));
+}
 
-    return {
-      id: group.id,
-      groupLabel: group.label,
-      title: group.theme,
-      wordCount: group.words.length,
-      paragraphs: compileReadingTemplate(blueprint.template, group.words)
-    };
+function createReadingParagraphs(words) {
+  const chunks = [];
+
+  for (let index = 0; index < words.length; index += 4) {
+    chunks.push(words.slice(index, index + 4));
+  }
+
+  return chunks.map((chunk, index) => {
+    const frame = READING_SENTENCE_FRAMES[index] || READING_SENTENCE_FRAMES[READING_SENTENCE_FRAMES.length - 1];
+    return `${frame.start} ${formatGlossWordList(chunk)}${frame.end}`;
   });
 }
 
-function compileReadingTemplate(template, words) {
-  return template
-    .trim()
-    .split(/\n\s*\n/)
-    .map((paragraph) => paragraph.replace(/\[\[(\d+)(?:\|([^[\]]+))?\]\]/g, (_match, index, customText) => {
-      const word = words[Number(index)];
-      const visibleText = customText || word?.english || "";
+function formatGlossWordList(words) {
+  const items = words.map((word) => createGlossWord(word, word.displayEnglish));
 
-      if (!word) {
-        return escapeHtml(visibleText);
-      }
+  if (items.length === 0) {
+    return "";
+  }
 
-      return createGlossWord(word, visibleText);
-    }));
+  if (items.length === 1) {
+    return items[0];
+  }
+
+  if (items.length === 2) {
+    return `${items[0]} and ${items[1]}`;
+  }
+
+  return `${items.slice(0, -1).join(", ")}, and ${items[items.length - 1]}`;
 }
 
 function createGlossWord(word, visibleText) {
@@ -1171,29 +781,6 @@ function createGlossWord(word, visibleText) {
   return `<span class="gloss-word" tabindex="0" data-translation="${escapeAttribute(translation)}" title="${escapeAttribute(label)}" aria-label="${escapeAttribute(label)}">${escapeHtml(visibleText)}</span>`;
 }
 
-function makeFallbackReadingBlueprint(group) {
-  const placeholders = group.words.map((_, index) => `[[${index}]]`);
-  const chunks = [];
-
-  for (let index = 0; index < placeholders.length; index += 4) {
-    chunks.push(placeholders.slice(index, index + 4));
-  }
-
-  return {
-    title: group.theme,
-    template: chunks
-      .map((chunk, index) => {
-        const intro = index === 0
-          ? "In this short story"
-          : index === 1
-            ? "Later in the same scene"
-            : "At the end";
-
-        return `${intro}, we meet ${chunk.join(", ")}.`;
-      })
-      .join("\n\n")
-  };
-}
 
 function loadProgress() {
   const fallback = {
@@ -1305,13 +892,11 @@ function buildGroups(words) {
 
   words.forEach((word) => {
     const id = String(word.groupNumber);
-    const theme = GROUP_THEMES[id] || `Тема ${id}`;
 
     if (!grouped.has(id)) {
       grouped.set(id, {
         id,
         label: `Группа ${id}`,
-        theme,
         words: []
       });
     }
@@ -1319,8 +904,14 @@ function buildGroups(words) {
     grouped.get(id).words.push(word);
   });
 
-  return [...grouped.values()].sort((left, right) => Number(left.id) - Number(right.id));
+  const orderedGroups = [...grouped.values()].sort((left, right) => Number(left.id) - Number(right.id));
+
+  return orderedGroups.map((group, index) => ({
+    ...group,
+    theme: getFrequencyTheme(index + 1, orderedGroups.length)
+  }));
 }
+
 
 function shuffle(items) {
   const cloned = items.slice();
