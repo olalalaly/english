@@ -47,11 +47,11 @@ const FREQUENCY_THEME_STEPS = [
   { limit: 1, label: "Очень редкие слова" }
 ];
 
-const READING_SENTENCE_FRAMES = [
-  { start: "The first words in this set are", end: "." },
-  { start: "Then I read", end: " aloud and match them with the meaning." },
-  { start: "After that, I write", end: " from memory." },
-  { start: "At the end, I review", end: " once more." }
+const READING_STORY_FRAMES = [
+  { start: "Chapter {group} opens the same notebook, and I begin with", end: "." },
+  { start: "A little later, I repeat", end: " aloud and connect each item to the meaning." },
+  { start: "In the next exercise, I write", end: " in short practice lines." },
+  { start: "Before the page ends, I review", end: " one more time and carry them into the next chapter." }
 ];
 
 function getFrequencyTheme(groupNumber, totalGroups) {
@@ -450,8 +450,8 @@ function renderReadingTexts() {
 
   els.textsChip.textContent = `${readingTexts.length} текстов`;
   els.textsNote.textContent = selectedReading
-    ? `${selectedReading.groupLabel} показана первой. Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.`
-    : "Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.";
+    ? `${selectedReading.groupLabel} показана первой. Все тексты идут как одна учебная история. Наводите курсор на выделенное слово, чтобы увидеть перевод.`
+    : "Все тексты идут как одна учебная история. Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.";
 
   els.readingGrid.innerHTML = orderedTexts.map((text) => `
     <article class="reading-card${text.id === state.selectedGroup ? " selected" : ""}">
@@ -739,20 +739,22 @@ function buildReadingTexts(groups) {
     groupLabel: group.label,
     title: group.theme,
     wordCount: group.words.length,
-    paragraphs: createReadingParagraphs(group.words)
+    paragraphs: createReadingParagraphs(group)
   }));
 }
 
-function createReadingParagraphs(words) {
+function createReadingParagraphs(group) {
   const chunks = [];
+  const words = group.words;
 
-  for (let index = 0; index < words.length; index += 4) {
-    chunks.push(words.slice(index, index + 4));
+  for (let index = 0; index < words.length; index += 3) {
+    chunks.push(words.slice(index, index + 3));
   }
 
   return chunks.map((chunk, index) => {
-    const frame = READING_SENTENCE_FRAMES[index] || READING_SENTENCE_FRAMES[READING_SENTENCE_FRAMES.length - 1];
-    return `${frame.start} ${formatGlossWordList(chunk)}${frame.end}`;
+    const frame = READING_STORY_FRAMES[index] || READING_STORY_FRAMES[READING_STORY_FRAMES.length - 1];
+    const start = frame.start.replace("{group}", group.id);
+    return `${start} ${formatGlossWordList(chunk)}${frame.end}`;
   });
 }
 
