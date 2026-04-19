@@ -80,6 +80,7 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
     id: makeId(entry.english, index),
     displayEnglish: entry.displayEnglish || entry.english,
     speakText: entry.speakText || entry.english,
+    frequencyScore: Number(entry.frequencyScore) || 0,
     acceptedEnglishAnswers: englishVariants.map(normalizeEnglish).filter(Boolean),
     acceptedRussianAnswers: russianVariants.map(normalizeRussian).filter(Boolean),
     groupNumber: entry.group || Math.floor(index / GROUP_SIZE) + 1
@@ -910,8 +911,18 @@ function buildGroups(words) {
 
   return orderedGroups.map((group, index) => ({
     ...group,
+    words: sortWordsByPopularity(group.words),
     theme: getFrequencyTheme(index + 1, orderedGroups.length)
   }));
+}
+
+function sortWordsByPopularity(words) {
+  return words
+    .slice()
+    .sort((left, right) => (
+      right.frequencyScore - left.frequencyScore ||
+      left.displayEnglish.localeCompare(right.displayEnglish)
+    ));
 }
 
 
