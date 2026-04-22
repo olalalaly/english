@@ -568,7 +568,12 @@ window.WORDS = [
   { english: "to give it your all", russian: "выкладываться; отдавать все силы", group: 27, frequencyScore: 3.452 },
   { english: "nameless", russian: "безымянный; неизвестный", group: 33, frequencyScore: 3.15 },
   { english: "to fall back", russian: "отступить; падать назад", group: 10, frequencyScore: 4.258 },
-  { english: "all that", russian: "крутой; особенный; прям очень", group: 14, frequencyScore: 4.051 },
+  {
+    english: "all that",
+    russian: "все это; все то; все, что; все такое; и все такое; настолько; до такой степени",
+    group: 14,
+    frequencyScore: 4.051
+  },
   { english: "dashboard", russian: "приборная панель", group: 30, frequencyScore: 3.33 },
   { english: "It ain't like", russian: "это не так; не то чтобы", group: 29, frequencyScore: 3.392 },
   { english: "to pack", russian: "упаковывать; наполнять", group: 13, frequencyScore: 4.11 },
