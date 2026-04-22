@@ -5,6 +5,8 @@ const GROUP_SIZE = 12;
 const DEFAULT_RATING = 2;
 const MAX_RATING = 5;
 const HARD_RATING_THRESHOLD = 2;
+const GROUP_THEME_OVERRIDES = window.GROUP_THEME_OVERRIDES || {};
+const CUSTOM_READING_PARAGRAPHS = window.CUSTOM_READING_PARAGRAPHS || {};
 
 const MODES = {
   cards: {
@@ -651,13 +653,14 @@ function speakEntry(entry) {
   }
 
   const utterance = new SpeechSynthesisUtterance(entry.speakText);
-  utterance.lang = "en-US";
-  utterance.rate = 0.95;
+  utterance.lang = "en-GB";
+  utterance.rate = 0.93;
   utterance.pitch = 1;
 
   const selectedVoice = selectVoice(state.voices);
   if (selectedVoice) {
     utterance.voice = selectedVoice;
+    utterance.lang = selectedVoice.lang || "en-GB";
   }
 
   window.speechSynthesis.cancel();
@@ -682,13 +685,20 @@ function selectVoice(voices) {
     return null;
   }
 
-  const preferredNames = ["Samantha", "Daniel", "Karen", "Moira"];
+  const preferredBritishNames = [
+    "Daniel",
+    "Google UK English Female",
+    "Google UK English Male",
+    "Kate",
+    "Serena",
+    "Oliver"
+  ];
 
   return (
-    voices.find((voice) => preferredNames.includes(voice.name)) ||
-    voices.find((voice) => voice.lang.startsWith("en-US")) ||
     voices.find((voice) => voice.lang.startsWith("en-GB")) ||
+    voices.find((voice) => preferredBritishNames.includes(voice.name)) ||
     voices.find((voice) => voice.lang.startsWith("en")) ||
+    voices.find((voice) => voice.lang.startsWith("en-US")) ||
     null
   );
 }
@@ -730,7 +740,7 @@ function updateSummaryStats() {
   } else if (state.selectedGroup === "all") {
     els.supportNote.textContent = "Сейчас открыты все группы. Они идут от самых частых слов к более редким, поэтому удобнее начинать сверху.";
   } else {
-    els.supportNote.textContent = "Рейтинг слова можно менять вручную от 0 до 5, а правильные и неправильные ответы обновляют его автоматически.";
+    els.supportNote.textContent = "Рейтинг слова можно менять вручную от 0 до 5, а озвучка старается выбирать британский английский, если такой голос есть в браузере.";
   }
 }
 
@@ -740,7 +750,29 @@ function buildReadingTexts(groups) {
     groupLabel: group.label,
     title: group.theme,
     wordCount: group.words.length,
-    paragraphs: createReadingParagraphs(group)
+    paragraphs: buildCustomParagraphs(group) || createReadingParagraphs(group)
+  }));
+}
+
+function buildCustomParagraphs(group) {
+  const templates = CUSTOM_READING_PARAGRAPHS[group.id];
+
+  if (!templates) {
+    return null;
+  }
+
+  const lookup = new Map(
+    group.words.map((word) => [String(word.english).toLowerCase(), word])
+  );
+
+  return templates.map((template) => template.replace(/\{([^}]+)\}/g, (_, key) => {
+    const entry = lookup.get(String(key).trim().toLowerCase());
+
+    if (!entry) {
+      return escapeHtml(String(key).trim());
+    }
+
+    return createGlossWord(entry, entry.readingEnglish || entry.displayEnglish);
   }));
 }
 
@@ -760,7 +792,7 @@ function createReadingParagraphs(group) {
 }
 
 function formatGlossWordList(words) {
-  const items = words.map((word) => createGlossWord(word, word.displayEnglish));
+  const items = words.map((word) => createGlossWord(word, word.readingEnglish || word.displayEnglish));
 
   if (items.length === 0) {
     return "";
@@ -912,7 +944,7 @@ function buildGroups(words) {
   return orderedGroups.map((group, index) => ({
     ...group,
     words: sortWordsByPopularity(group.words),
-    theme: getFrequencyTheme(index + 1, orderedGroups.length)
+    theme: GROUP_THEME_OVERRIDES[group.id] || getFrequencyTheme(index + 1, orderedGroups.length)
   }));
 }
 
