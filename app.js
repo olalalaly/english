@@ -79,7 +79,7 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
 
   return {
     ...entry,
-    id: makeId(entry.english, index),
+    id: entry.id || makeId(entry.english, index),
     displayEnglish: entry.displayEnglish || entry.english,
     speakText: entry.speakText || entry.english,
     frequencyScore: Number(entry.frequencyScore) || 0,
@@ -89,6 +89,7 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
   };
 });
 
+const globalWordLookup = createWordLookup(preparedWords);
 const wordGroups = buildGroups(preparedWords);
 const readingTexts = buildReadingTexts(wordGroups);
 const persistent = loadProgress();
@@ -765,12 +766,10 @@ function buildCustomParagraphs(group) {
     return null;
   }
 
-  const lookup = new Map(
-    group.words.map((word) => [String(word.english).toLowerCase(), word])
-  );
+  const lookup = createWordLookup(group.words);
 
   return templates.map((template) => template.replace(/\{([^}]+)\}/g, (_, key) => {
-    const entry = lookup.get(String(key).trim().toLowerCase());
+    const entry = lookup.get(normalizeLookupKey(key)) || globalWordLookup.get(normalizeLookupKey(key));
 
     if (!entry) {
       return escapeHtml(String(key).trim());
@@ -1014,6 +1013,36 @@ function splitRussianVariants(value) {
 
 function uniqueValues(values) {
   return Array.from(new Set(values.filter(Boolean)));
+}
+
+function createWordLookup(words) {
+  const lookup = new Map();
+
+  words.forEach((word) => {
+    const aliases = uniqueValues([
+      word.english,
+      word.displayEnglish,
+      word.readingEnglish,
+      ...(word.acceptedAnswers || []),
+      ...(word.legacyEnglishVariants || [])
+    ]);
+
+    aliases.forEach((alias) => {
+      const marker = normalizeLookupKey(alias);
+
+      if (!marker || lookup.has(marker)) {
+        return;
+      }
+
+      lookup.set(marker, word);
+    });
+  });
+
+  return lookup;
+}
+
+function normalizeLookupKey(value) {
+  return normalizeEnglish(String(value || "").replace(/\([^)]*\)/g, " "));
 }
 
 function normalizeEnglish(value) {
