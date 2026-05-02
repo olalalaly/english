@@ -694,9 +694,13 @@ function selectVoice(voices) {
     "Oliver"
   ];
 
+  const britishVoices = voices.filter((voice) => voice.lang.startsWith("en-GB"));
+
   return (
-    voices.find((voice) => voice.lang.startsWith("en-GB")) ||
+    britishVoices.find((voice) => preferredBritishNames.includes(voice.name)) ||
+    britishVoices.find((voice) => /uk|british/i.test(voice.name)) ||
     voices.find((voice) => preferredBritishNames.includes(voice.name)) ||
+    britishVoices[0] ||
     voices.find((voice) => voice.lang.startsWith("en")) ||
     voices.find((voice) => voice.lang.startsWith("en-US")) ||
     null

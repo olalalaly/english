@@ -263,7 +263,7 @@ window.WORDS = [
   { english: "tomfoolery", russian: "дурачество; шалости", group: 43, frequencyScore: 2.23 },
   { english: "root", russian: "корень; основа; источник", group: 8, frequencyScore: 4.41 },
   { english: "gossip", russian: "сплетни; слухи", group: 18, frequencyScore: 3.88 },
-  { english: "eager", russian: "стремящийся; жаждущий; eager", group: 15, frequencyScore: 4.03 },
+  { english: "eager", russian: "стремящийся; жаждущий; нетерпеливый", group: 15, frequencyScore: 4.03 },
   { english: "dove", russian: "голубь", group: 22, frequencyScore: 3.67 },
   { english: "to beat", russian: "бить; побеждать", group: 7, frequencyScore: 4.46 },
   { english: "beverage", russian: "напиток", group: 22, frequencyScore: 3.69 },
@@ -330,7 +330,7 @@ window.WORDS = [
   { english: "kite", russian: "воздушный змей; коршун", group: 25, frequencyScore: 3.55 },
   { english: "magpie", russian: "сорока", group: 38, frequencyScore: 2.9 },
   { english: "crane", russian: "журавль", group: 18, frequencyScore: 3.92 },
-  { english: "grief", russian: "горе; скорбь; grief", group: 14, frequencyScore: 4.08 },
+  { english: "grief", russian: "горе; скорбь; печаль", group: 14, frequencyScore: 4.08 },
   { english: "to grieve", russian: "горевать; скорбеть", group: 39, frequencyScore: 2.78 },
   { english: "to get lost", russian: "заблудиться; потеряться", group: 6, frequencyScore: 4.512 },
   { english: "complacency", russian: "самоуспокоение; беспечность", group: 35, frequencyScore: 3.05 },
@@ -490,7 +490,7 @@ window.WORDS = [
   {
     english: "tryna",
     acceptedAnswers: ["trying to"],
-    russian: "пытаюсь; собираюсь; trying to",
+    russian: "пытаюсь; собираюсь; стараюсь",
     group: 44,
     frequencyScore: 1.94
   },
@@ -506,7 +506,7 @@ window.WORDS = [
     english: "Lil'",
     displayEnglish: "Lil' = little",
     acceptedAnswers: ["lil", "little"],
-    russian: "сокращение от little",
+    russian: "разговорное сокращение; маленький; крошечный",
     group: 19,
     frequencyScore: 3.88
   },
@@ -551,7 +551,7 @@ window.WORDS = [
   { english: "toil", russian: "тяжелый труд; изнурительный труд", group: 36, frequencyScore: 3.03 },
   { english: "hardship", russian: "трудность; лишение", group: 25, frequencyScore: 3.56 },
   { english: "austere", russian: "суровый; аскетичный; строгий", group: 36, frequencyScore: 3.0 },
-  { english: "hath", russian: "устаревшая форма has", group: 23, frequencyScore: 3.62 },
+  { english: "hath", russian: "устаревшая форма глагола иметь; имеет; обладает", group: 23, frequencyScore: 3.62 },
   { english: "shutter", russian: "ставня; затвор", group: 27, frequencyScore: 3.48 },
   { english: "lane", russian: "переулок; дорожка; аллея", group: 5, frequencyScore: 4.57 },
   { english: "plain", russian: "простой; ясный; очевидный; равнина", group: 7, frequencyScore: 4.43 },
@@ -582,7 +582,7 @@ window.WORDS = [
     english: "'bout",
     displayEnglish: "'bout = about",
     acceptedAnswers: ["bout", "about"],
-    russian: "насчет; about",
+    russian: "насчет; про; около",
     group: 40,
     frequencyScore: 2.65
   },
