@@ -89,8 +89,13 @@ const preparedWords = (window.WORDS || []).map((entry, index) => {
   };
 });
 
-const globalWordLookup = createWordLookup(preparedWords);
 const wordGroups = buildGroups(preparedWords);
+const extraGroupIds = new Set(
+  wordGroups
+    .filter((group) => group.theme.startsWith("Дополнительно"))
+    .map((group) => group.id)
+);
+const coreWords = preparedWords.filter((entry) => !extraGroupIds.has(String(entry.groupNumber)));
 const readingTexts = buildReadingTexts(wordGroups);
 const persistent = loadProgress();
 
@@ -283,6 +288,7 @@ function bindEvents() {
 
 function populateGroupSelect() {
   const options = [
+    { value: "core", label: `Основной словарь · ${coreWords.length} слов` },
     { value: "all", label: `Все группы · ${preparedWords.length} слов` },
     ...wordGroups.map((group) => ({
       value: group.id,
@@ -309,6 +315,10 @@ function resetTurnState() {
 }
 
 function getSelectedWords() {
+  if (state.selectedGroup === "core") {
+    return coreWords.slice();
+  }
+
   if (state.selectedGroup === "all") {
     return preparedWords.slice();
   }
@@ -391,6 +401,12 @@ function updateProgress() {
   const currentGroup = wordGroups.find((group) => group.id === state.selectedGroup);
 
   els.progressChip.textContent = `${state.index + 1} / ${total}`;
+
+  if (state.selectedGroup === "core") {
+    els.groupChip.textContent = `Основной словарь · ${selectedWords.length} слов`;
+    return;
+  }
+
   els.groupChip.textContent = state.selectedGroup === "all"
     ? `Все группы · ${selectedWords.length} слов`
     : `${currentGroup.label} · ${currentGroup.theme} · ${selectedWords.length} слов`;
@@ -448,12 +464,14 @@ function renderRating(entry) {
 
 function renderReadingTexts() {
   const orderedTexts = getOrderedReadingTexts();
-  const selectedReading = state.selectedGroup === "all"
+  const selectedReading = state.selectedGroup === "all" || state.selectedGroup === "core"
     ? null
     : orderedTexts.find((text) => text.id === state.selectedGroup);
 
-  els.textsChip.textContent = `${readingTexts.length} текстов`;
-  els.textsNote.textContent = selectedReading
+  els.textsChip.textContent = `${orderedTexts.length} текстов`;
+  els.textsNote.textContent = state.selectedGroup === "core"
+    ? "Сейчас показаны тексты только для основного словаря. Дополнительные тематические группы скрыты, чтобы не перегружать повторение."
+    : selectedReading
     ? `${selectedReading.groupLabel} показана первой. Все тексты идут как одна учебная история. Наводите курсор на выделенное слово, чтобы увидеть перевод.`
     : "Все тексты идут как одна учебная история. Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.";
 
@@ -469,11 +487,19 @@ function renderReadingTexts() {
 }
 
 function getOrderedReadingTexts() {
+  const visibleTexts = state.selectedGroup === "core"
+    ? readingTexts.filter((text) => !extraGroupIds.has(text.id))
+    : readingTexts.slice();
+
   if (state.selectedGroup === "all") {
-    return readingTexts.slice();
+    return visibleTexts;
   }
 
-  return readingTexts
+  if (state.selectedGroup === "core") {
+    return visibleTexts;
+  }
+
+  return visibleTexts
     .slice()
     .sort((left, right) => {
       if (left.id === state.selectedGroup) {
@@ -742,6 +768,8 @@ function updateSummaryStats() {
     els.supportNote.textContent = "В этом браузере не нашлась Web Speech API, поэтому озвучка может не работать.";
   } else if (state.hardOnly && state.useAllWordsFallback) {
     els.supportNote.textContent = "В выбранной группе пока нет слов с рейтингом 0-2, поэтому показываются все слова этой группы.";
+  } else if (state.selectedGroup === "core") {
+    els.supportNote.textContent = "Сейчас открыт основной словарь: без дополнительных тематических групп, редких выражений и грубого сленга.";
   } else if (state.selectedGroup === "all") {
     els.supportNote.textContent = "Сейчас открыты все группы. Они идут от самых частых слов к более редким, поэтому удобнее начинать сверху.";
   } else {
@@ -767,16 +795,29 @@ function buildCustomParagraphs(group) {
   }
 
   const lookup = createWordLookup(group.words);
+  const rendered = [];
 
-  return templates.map((template) => template.replace(/\{([^}]+)\}/g, (_, key) => {
-    const entry = lookup.get(normalizeLookupKey(key)) || globalWordLookup.get(normalizeLookupKey(key));
+  for (const template of templates) {
+    let isCompatible = true;
+    const paragraph = template.replace(/\{([^}]+)\}/g, (_, key) => {
+      const entry = lookup.get(normalizeLookupKey(key));
 
-    if (!entry) {
-      return escapeHtml(String(key).trim());
+      if (!entry) {
+        isCompatible = false;
+        return escapeHtml(String(key).trim());
+      }
+
+      return createGlossWord(entry, entry.readingEnglish || entry.displayEnglish);
+    });
+
+    if (!isCompatible) {
+      return null;
     }
 
-    return createGlossWord(entry, entry.readingEnglish || entry.displayEnglish);
-  }));
+    rendered.push(paragraph);
+  }
+
+  return rendered;
 }
 
 function createReadingParagraphs(group) {
@@ -1110,8 +1151,8 @@ function legacyScoreToRating(score) {
 }
 
 function normalizeSelectedGroup(value) {
-  if (value === "all") {
-    return "all";
+  if (value === "all" || value === "core") {
+    return value;
   }
 
   return wordGroups.some((group) => group.id === String(value))
