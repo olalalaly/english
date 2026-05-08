@@ -96,7 +96,7 @@ const extraGroupIds = new Set(
     .filter((group) => group.theme.startsWith("Дополнительно"))
     .map((group) => group.id)
 );
-const coreWords = preparedWords.filter((entry) => !extraGroupIds.has(String(entry.groupNumber)));
+const defaultStudyGroupId = wordGroups.find((group) => !extraGroupIds.has(group.id))?.id || wordGroups[0]?.id || "all";
 const readingTexts = buildReadingTexts(wordGroups);
 const persistent = loadProgress();
 
@@ -310,18 +310,20 @@ function bindEvents() {
 }
 
 function populateGroupSelect() {
-  const options = [
-    { value: "core", label: `Основной словарь · ${coreWords.length} слов` },
-    { value: "all", label: `Все группы · ${preparedWords.length} слов` },
-    ...wordGroups.map((group) => ({
-      value: group.id,
-      label: `${group.label} · ${group.theme} · ${group.words.length} слов`
-    }))
-  ];
-
-  els.groupSelect.innerHTML = options
-    .map((option) => `<option value="${option.value}">${option.label}</option>`)
+  const coreOptions = wordGroups
+    .filter((group) => !extraGroupIds.has(group.id))
+    .map((group) => `<option value="${group.id}">${group.label} · ${group.theme} · ${group.words.length} слов</option>`)
     .join("");
+
+  const extraOptions = wordGroups
+    .filter((group) => extraGroupIds.has(group.id))
+    .map((group) => `<option value="${group.id}">${group.label} · ${group.theme} · ${group.words.length} слов</option>`)
+    .join("");
+
+  els.groupSelect.innerHTML = [
+    `<optgroup label="Основной словарь">${coreOptions}</optgroup>`,
+    extraOptions ? `<optgroup label="Дополнительные группы">${extraOptions}</optgroup>` : ""
+  ].join("");
 }
 
 function rebuildDeck() {
@@ -338,9 +340,7 @@ function resetTurnState() {
 }
 
 function getSelectedWords() {
-  const selectedWords = state.selectedGroup === "core"
-    ? coreWords.slice()
-    : state.selectedGroup === "all"
+  const selectedWords = state.selectedGroup === "all"
     ? preparedWords.slice()
     : (() => {
         const foundGroup = wordGroups.find((group) => group.id === state.selectedGroup);
@@ -353,10 +353,6 @@ function getSelectedWords() {
 }
 
 function getUnfilteredSelectedWords() {
-  if (state.selectedGroup === "core") {
-    return coreWords.slice();
-  }
-
   if (state.selectedGroup === "all") {
     return preparedWords.slice();
   }
@@ -445,11 +441,6 @@ function updateProgress() {
 
   els.progressChip.textContent = total ? `${state.index + 1} / ${total}` : "0 / 0";
 
-  if (state.selectedGroup === "core") {
-    els.groupChip.textContent = `Основной словарь · ${selectedWords.length} слов`;
-    return;
-  }
-
   els.groupChip.textContent = state.selectedGroup === "all"
     ? `Все группы · ${selectedWords.length} слов`
     : `${currentGroup.label} · ${currentGroup.theme} · ${selectedWords.length} слов`;
@@ -537,14 +528,12 @@ function renderEmptyTrainer() {
 
 function renderReadingTexts() {
   const orderedTexts = getOrderedReadingTexts();
-  const selectedReading = state.selectedGroup === "all" || state.selectedGroup === "core"
+  const selectedReading = state.selectedGroup === "all"
     ? null
     : orderedTexts.find((text) => text.id === state.selectedGroup);
 
   els.textsChip.textContent = `${orderedTexts.length} текстов`;
-  els.textsNote.textContent = state.selectedGroup === "core"
-    ? "Сейчас показаны тексты только для основного словаря. Дополнительные тематические группы скрыты, чтобы не перегружать повторение."
-    : selectedReading
+  els.textsNote.textContent = selectedReading
     ? `${selectedReading.groupLabel} показана первой. Все тексты идут как одна учебная история. Наводите курсор на выделенное слово, чтобы увидеть перевод.`
     : "Все тексты идут как одна учебная история. Наводите курсор на выделенное слово, чтобы увидеть перевод. На телефоне можно нажать на слово.";
 
@@ -560,15 +549,9 @@ function renderReadingTexts() {
 }
 
 function getOrderedReadingTexts() {
-  const visibleTexts = state.selectedGroup === "core"
-    ? readingTexts.filter((text) => !extraGroupIds.has(text.id))
-    : readingTexts.slice();
+  const visibleTexts = readingTexts.slice();
 
   if (state.selectedGroup === "all") {
-    return visibleTexts;
-  }
-
-  if (state.selectedGroup === "core") {
     return visibleTexts;
   }
 
@@ -874,8 +857,8 @@ function updateSummaryStats() {
     els.supportNote.textContent = "В этой подборке все слова уже отмечены как выученные. Включите «Показывать выученные», если хотите снова их увидеть.";
   } else if (state.hardOnly && state.useAllWordsFallback) {
     els.supportNote.textContent = "В выбранной группе пока нет слов с рейтингом 0-2, поэтому показываются все слова этой группы.";
-  } else if (state.selectedGroup === "core") {
-    els.supportNote.textContent = "Сейчас открыт основной словарь: без дополнительных тематических групп, редких выражений и грубого сленга.";
+  } else if (extraGroupIds.has(String(state.selectedGroup))) {
+    els.supportNote.textContent = "Сейчас открыта дополнительная тематическая группа. Основные группы для повседневного английского идут выше в списке.";
   } else if (state.selectedGroup === "all") {
     els.supportNote.textContent = "Сейчас открыты все группы. Они идут от самых частых слов к более редким, поэтому удобнее начинать сверху.";
   } else {
@@ -978,7 +961,7 @@ function loadProgress() {
       hardOnly: false,
       showLearned: SHOW_LEARNED_BY_DEFAULT,
       mode: "cards",
-      selectedGroup: "core"
+      selectedGroup: defaultStudyGroupId
     }
   };
 
@@ -1268,12 +1251,12 @@ function legacyScoreToRating(score) {
 
 function normalizeSelectedGroup(value) {
   if (value === "all" || value === "core") {
-    return value;
+    return defaultStudyGroupId;
   }
 
   return wordGroups.some((group) => group.id === String(value))
     ? String(value)
-    : (wordGroups[0]?.id || "all");
+    : defaultStudyGroupId;
 }
 
 function normalizeMode(mode) {
