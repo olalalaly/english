@@ -5,6 +5,7 @@ const GROUP_SIZE = 12;
 const DEFAULT_RATING = 2;
 const MAX_RATING = 5;
 const HARD_RATING_THRESHOLD = 2;
+const SHOW_LEARNED_BY_DEFAULT = false;
 const GROUP_THEME_OVERRIDES = window.GROUP_THEME_OVERRIDES || {};
 const CUSTOM_READING_PARAGRAPHS = window.CUSTOM_READING_PARAGRAPHS || {};
 
@@ -104,8 +105,10 @@ const state = {
   mode: normalizeMode(persistent.settings.mode),
   autoSpeak: persistent.settings.autoSpeak,
   hardOnly: persistent.settings.hardOnly,
+  showLearned: persistent.settings.showLearned,
   selectedGroup: normalizeSelectedGroup(persistent.settings.selectedGroup),
   ratings: persistent.ratings,
+  learned: persistent.learned,
   stats: persistent.stats,
   deck: [],
   index: 0,
@@ -131,6 +134,7 @@ const els = {
   groupSelect: document.querySelector("#groupSelect"),
   autoSpeak: document.querySelector("#autoSpeak"),
   hardOnly: document.querySelector("#hardOnly"),
+  showLearned: document.querySelector("#showLearned"),
   shuffleButton: document.querySelector("#shuffleButton"),
   resetButton: document.querySelector("#resetButton"),
   modeLabel: document.querySelector("#modeLabel"),
@@ -144,6 +148,7 @@ const els = {
   wordHint: document.querySelector("#wordHint"),
   translationBox: document.querySelector("#translationBox"),
   translationText: document.querySelector("#translationText"),
+  ratingPanel: document.querySelector(".rating-panel"),
   answerLabel: document.querySelector("#answerLabel"),
   writingForm: document.querySelector("#writingForm"),
   answerInput: document.querySelector("#answerInput"),
@@ -158,6 +163,7 @@ const els = {
   checkButton: document.querySelector("#checkButton"),
   showAnswerButton: document.querySelector("#showAnswerButton"),
   nextButton: document.querySelector("#nextButton"),
+  markLearnedButton: document.querySelector("#markLearnedButton"),
   ratingButtons: Array.from(document.querySelectorAll(".rating-button")),
   cardsReviewed: document.querySelector("#cardsReviewed"),
   writingToEnglishAnswered: document.querySelector("#writingToEnglishAnswered"),
@@ -174,6 +180,7 @@ function init() {
   bindEvents();
   els.autoSpeak.checked = state.autoSpeak;
   els.hardOnly.checked = state.hardOnly;
+  els.showLearned.checked = state.showLearned;
   els.groupSelect.value = state.selectedGroup;
   rebuildDeck();
   render(false);
@@ -226,6 +233,19 @@ function bindEvents() {
     saveProgress();
   });
 
+  els.showLearned.addEventListener("change", () => {
+    state.showLearned = els.showLearned.checked;
+    rebuildDeck();
+    state.feedback = {
+      type: "info",
+      text: state.showLearned
+        ? "Выученные слова снова видны в тренировке."
+        : "Выученные слова скрыты из тренировки."
+    };
+    render(false);
+    saveProgress();
+  });
+
   els.shuffleButton.addEventListener("click", () => {
     rebuildDeck();
     state.feedback = {
@@ -238,18 +258,19 @@ function bindEvents() {
   });
 
   els.resetButton.addEventListener("click", () => {
-    const shouldReset = window.confirm("Сбросить рейтинги слов и всю статистику?");
+    const shouldReset = window.confirm("Сбросить рейтинги, отметки выученных слов и всю статистику?");
 
     if (!shouldReset) {
       return;
     }
 
     state.ratings = {};
+    state.learned = {};
     state.stats = createDefaultStats();
     rebuildDeck();
     state.feedback = {
       type: "info",
-      text: "Рейтинги и статистика очищены. Можно начинать заново."
+      text: "Рейтинги, отметки выученных слов и статистика очищены. Можно начинать заново."
     };
     render(false);
     saveProgress();
@@ -284,6 +305,8 @@ function bindEvents() {
   els.ratingButtons.forEach((button) => {
     button.addEventListener("click", () => setCurrentRating(Number(button.dataset.rating)));
   });
+
+  els.markLearnedButton.addEventListener("click", toggleCurrentLearned);
 }
 
 function populateGroupSelect() {
@@ -315,6 +338,21 @@ function resetTurnState() {
 }
 
 function getSelectedWords() {
+  const selectedWords = state.selectedGroup === "core"
+    ? coreWords.slice()
+    : state.selectedGroup === "all"
+    ? preparedWords.slice()
+    : (() => {
+        const foundGroup = wordGroups.find((group) => group.id === state.selectedGroup);
+        return foundGroup ? foundGroup.words.slice() : wordGroups[0].words.slice();
+      })();
+
+  return state.showLearned
+    ? selectedWords
+    : selectedWords.filter((entry) => !isLearned(entry.id));
+}
+
+function getUnfilteredSelectedWords() {
   if (state.selectedGroup === "core") {
     return coreWords.slice();
   }
@@ -359,6 +397,11 @@ function render(shouldAutoSpeak) {
     return;
   }
 
+  if (!state.deck.length) {
+    renderEmptyTrainer();
+    return;
+  }
+
   const current = getCurrentEntry();
   const mode = MODES[state.mode];
 
@@ -396,11 +439,11 @@ function updateViewState() {
 }
 
 function updateProgress() {
-  const total = state.deck.length || 1;
+  const total = state.deck.length;
   const selectedWords = getSelectedWords();
   const currentGroup = wordGroups.find((group) => group.id === state.selectedGroup);
 
-  els.progressChip.textContent = `${state.index + 1} / ${total}`;
+  els.progressChip.textContent = total ? `${state.index + 1} / ${total}` : "0 / 0";
 
   if (state.selectedGroup === "core") {
     els.groupChip.textContent = `Основной словарь · ${selectedWords.length} слов`;
@@ -413,6 +456,7 @@ function updateProgress() {
 }
 
 function renderCardsMode(entry) {
+  els.ratingPanel.classList.remove("hidden");
   els.cardCaption.textContent = MODES.cards.caption;
   els.wordText.textContent = entry.displayEnglish;
   els.wordHint.textContent = state.cardRevealed
@@ -432,6 +476,7 @@ function renderCardsMode(entry) {
 function renderWritingMode(entry, mode) {
   const isRussianWriting = state.mode === "write-ru";
 
+  els.ratingPanel.classList.remove("hidden");
   els.cardCaption.textContent = mode.caption;
   els.wordText.textContent = isRussianWriting ? entry.displayEnglish : entry.russian;
   els.wordHint.textContent = isRussianWriting
@@ -455,11 +500,39 @@ function renderWritingMode(entry, mode) {
 
 function renderRating(entry) {
   const rating = getRating(entry.id);
-  els.ratingBadge.textContent = `Знаю на ${rating} / 5`;
+  const learned = isLearned(entry.id);
+
+  els.ratingBadge.textContent = learned ? `Выучено · ${rating} / 5` : `Знаю на ${rating} / 5`;
+  els.markLearnedButton.textContent = learned ? "Вернуть в повторение" : "Отметить как выучено";
+  els.markLearnedButton.classList.toggle("is-learned", learned);
 
   els.ratingButtons.forEach((button) => {
     button.classList.toggle("active", Number(button.dataset.rating) === rating);
   });
+}
+
+function renderEmptyTrainer() {
+  const emptySource = getUnfilteredSelectedWords();
+
+  els.groupSelect.value = state.selectedGroup;
+  updateProgress();
+  renderFeedback();
+  els.modeLabel.textContent = MODES[state.mode].label;
+  els.promptLabel.textContent = "В этой подборке сейчас нет активных слов";
+  els.directionChip.textContent = MODES[state.mode].direction;
+  els.ratingBadge.textContent = "Пауза";
+  els.cardCaption.textContent = "Статус";
+  els.wordText.textContent = emptySource.length
+    ? "Все слова здесь уже отмечены как выученные."
+    : "В этой группе пока нет слов для тренировки.";
+  els.wordHint.textContent = emptySource.length
+    ? "Включите «Показывать выученные» или выберите другую группу."
+    : "Выберите другую группу или вернитесь к основному словарю.";
+  els.translationBox.classList.add("hidden");
+  els.writingForm.classList.add("hidden");
+  els.cardActions.classList.add("hidden");
+  els.writingActions.classList.add("hidden");
+  els.ratingPanel.classList.add("hidden");
 }
 
 function renderReadingTexts() {
@@ -641,6 +714,33 @@ function setCurrentRating(rating) {
   saveProgress();
 }
 
+function toggleCurrentLearned() {
+  const entry = getCurrentEntry();
+
+  if (!entry) {
+    return;
+  }
+
+  if (isLearned(entry.id)) {
+    delete state.learned[entry.id];
+    state.feedback = {
+      type: "info",
+      text: `Слово "${entry.displayEnglish}" снова вернулось в повторение.`
+    };
+  } else {
+    state.learned[entry.id] = true;
+    state.ratings[entry.id] = MAX_RATING;
+    state.feedback = {
+      type: "success",
+      text: `Слово "${entry.displayEnglish}" отмечено как выученное и больше не будет мешать в тренировке.`
+    };
+  }
+
+  rebuildDeck();
+  render(false);
+  saveProgress();
+}
+
 function getCurrentEntry() {
   return state.deck[state.index] || preparedWords[0];
 }
@@ -649,6 +749,10 @@ function getRating(wordId) {
   return clampRating(
     Number.isFinite(state.ratings[wordId]) ? state.ratings[wordId] : DEFAULT_RATING
   );
+}
+
+function isLearned(wordId) {
+  return Boolean(state.learned[wordId]);
 }
 
 function adjustRating(wordId, delta) {
@@ -766,6 +870,8 @@ function updateSummaryStats() {
 
   if (!("speechSynthesis" in window)) {
     els.supportNote.textContent = "В этом браузере не нашлась Web Speech API, поэтому озвучка может не работать.";
+  } else if (!state.showLearned && getSelectedWords().length === 0 && getUnfilteredSelectedWords().length > 0) {
+    els.supportNote.textContent = "В этой подборке все слова уже отмечены как выученные. Включите «Показывать выученные», если хотите снова их увидеть.";
   } else if (state.hardOnly && state.useAllWordsFallback) {
     els.supportNote.textContent = "В выбранной группе пока нет слов с рейтингом 0-2, поэтому показываются все слова этой группы.";
   } else if (state.selectedGroup === "core") {
@@ -864,13 +970,15 @@ function createGlossWord(word, visibleText) {
 function loadProgress() {
   const fallback = {
     ratings: {},
+    learned: {},
     stats: createDefaultStats(),
     settings: {
       view: "study",
       autoSpeak: true,
       hardOnly: false,
+      showLearned: SHOW_LEARNED_BY_DEFAULT,
       mode: "cards",
-      selectedGroup: wordGroups[0]?.id || "all"
+      selectedGroup: "core"
     }
   };
 
@@ -879,11 +987,13 @@ function loadProgress() {
   if (current) {
     return {
       ratings: current.ratings && typeof current.ratings === "object" ? current.ratings : fallback.ratings,
+      learned: current.learned && typeof current.learned === "object" ? current.learned : fallback.learned,
       stats: { ...createDefaultStats(), ...(current.stats || {}) },
       settings: {
         view: current.settings?.view ?? fallback.settings.view,
         autoSpeak: current.settings?.autoSpeak ?? fallback.settings.autoSpeak,
         hardOnly: current.settings?.hardOnly ?? fallback.settings.hardOnly,
+        showLearned: current.settings?.showLearned ?? fallback.settings.showLearned,
         mode: current.settings?.mode ?? fallback.settings.mode,
         selectedGroup: current.settings?.selectedGroup ?? fallback.settings.selectedGroup
       }
@@ -895,11 +1005,13 @@ function loadProgress() {
   if (legacy) {
     return {
       ratings: legacy.ratings && typeof legacy.ratings === "object" ? legacy.ratings : fallback.ratings,
+      learned: fallback.learned,
       stats: { ...createDefaultStats(), ...(legacy.stats || {}) },
       settings: {
         view: "study",
         autoSpeak: legacy.settings?.autoSpeak ?? fallback.settings.autoSpeak,
         hardOnly: legacy.settings?.hardOnly ?? fallback.settings.hardOnly,
+        showLearned: fallback.settings.showLearned,
         mode: legacy.settings?.mode ?? fallback.settings.mode,
         selectedGroup: legacy.settings?.selectedGroup ?? fallback.settings.selectedGroup
       }
@@ -917,6 +1029,7 @@ function loadProgress() {
 
     return {
       ratings: migratedRatings,
+      learned: fallback.learned,
       stats: {
         ...createDefaultStats(),
         cardsReviewed: older.stats?.cardsReviewed || 0,
@@ -929,6 +1042,7 @@ function loadProgress() {
         view: "study",
         autoSpeak: older.settings?.autoSpeak ?? fallback.settings.autoSpeak,
         hardOnly: older.settings?.hardOnly ?? fallback.settings.hardOnly,
+        showLearned: fallback.settings.showLearned,
         mode: "cards",
         selectedGroup: fallback.settings.selectedGroup
       }
@@ -941,11 +1055,13 @@ function loadProgress() {
 function saveProgress() {
   const payload = {
     ratings: state.ratings,
+    learned: state.learned,
     stats: state.stats,
     settings: {
       view: state.view,
       autoSpeak: state.autoSpeak,
       hardOnly: state.hardOnly,
+      showLearned: state.showLearned,
       mode: state.mode,
       selectedGroup: state.selectedGroup
     }

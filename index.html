@@ -69,6 +69,11 @@
               <span>Только сложные слова</span>
             </label>
 
+            <label class="toggle">
+              <input id="showLearned" type="checkbox">
+              <span>Показывать выученные</span>
+            </label>
+
             <div class="control-buttons">
               <button class="ghost-button" id="shuffleButton" type="button">Перемешать</button>
               <button class="ghost-button" id="resetButton" type="button">Сбросить прогресс</button>
@@ -115,6 +120,9 @@
                   <button class="rating-button" data-rating="3" type="button">3</button>
                   <button class="rating-button" data-rating="4" type="button">4</button>
                   <button class="rating-button" data-rating="5" type="button">5</button>
+                </div>
+                <div class="rating-extra-actions">
+                  <button class="ghost-button learned-button" id="markLearnedButton" type="button">Отметить как выучено</button>
                 </div>
               </div>
             </article>

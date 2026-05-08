@@ -491,6 +491,13 @@ h2 {
   margin-top: 12px;
 }
 
+.rating-extra-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+
 .rating-button {
   min-width: 48px;
   padding: 10px 12px;
@@ -512,6 +519,11 @@ h2 {
   background: linear-gradient(135deg, var(--accent) 0%, #d46b37 100%);
   border-color: transparent;
   color: #fff8f0;
+}
+
+.learned-button.is-learned {
+  background: rgba(15, 123, 89, 0.12);
+  color: #0a694c;
 }
 
 .writing-form {
